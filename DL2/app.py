@@ -32,13 +32,13 @@ class Item(db.Model):
     loantime = db.Column(db.Integer, nullable=False, default=28)
     renewlimit = db.Column(db.Integer, nullable=False, default=10)
     
-    loan = db.relationship("Loan", back_populates="item")
-    holds = db.relationship("Hold", back_populates="item")
+    loan = db.relationship("Loan", cascade="all, delete-orphan", back_populates="item")
+    holds = db.relationship("Hold", cascade="all, delete-orphan", back_populates="item")
 
 class Loan(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
-    item_barcode = db.Column(db.String(6), db.ForeignKey("item.barcode"), nullable=False, unique=True)
-    patron_barcode = db.Column(db.String(6), db.ForeignKey("patron.barcode"), nullable=False)
+    item_barcode = db.Column(db.String(6), db.ForeignKey("item.barcode", ondelete="CASCADE"), unique=True)
+    patron_barcode = db.Column(db.String(6), db.ForeignKey("patron.barcode"))
     loandate = db.Column(db.DateTime, nullable=False)
     renewaldate = db.Column(db.DateTime, default=None)
     duedate = db.Column(db.DateTime, nullable=False)
@@ -50,8 +50,8 @@ class Loan(db.Model):
 
 class Hold(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
-    item_barcode = db.Column(db.String(6), db.ForeignKey("item.barcode"), nullable=False)
-    patron_barcode = db.Column(db.String(6), db.ForeignKey("patron.barcode"), nullable=False)
+    item_barcode = db.Column(db.String(6), db.ForeignKey("item.barcode", ondelete="CASCADE"))
+    patron_barcode = db.Column(db.String(6), db.ForeignKey("patron.barcode"))
     holddate = db.Column(db.DateTime, nullable=False)
     expirationdate = db.Column(db.DateTime, nullable=False)
     pickupdate = db.Column(db.DateTime, default=None)
