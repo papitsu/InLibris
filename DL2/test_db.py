@@ -291,7 +291,9 @@ def test_query_filters(db_handle):
 
 def test_update_patron_barcode(db_handle):
     """
-    Test that we can update the barcode of a patron.
+    Test that we can update the barcode of a patron. A patron is first created,
+    the old barcode is saved and a new barcode is given. Then the old barcode 
+    and the new barcode are compared.
     """
     
     # Create everything
