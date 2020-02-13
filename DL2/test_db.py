@@ -271,7 +271,8 @@ def test_uniqueness(db_handle):
 
 def test_query_filters(db_handle):
     """
-    
+    Test that we can query using multiple filters and find all, one or some
+    of the instances
     """
 
     # Filter Patron queries by firstname, barcode and email
@@ -288,7 +289,26 @@ def test_query_filters(db_handle):
     assert Patron.query.filter_by(barcode="456789").count() == 1
     assert Patron.query.filter(Patron.email!="test2@test.com").count() == 2
 
+def test_update_patron_barcode(db_handle):
+    """
+    Test that we can update the barcode of a patron.
+    """
+    
+    # Create everything
+    patron = _get_patron()
+    db_handle.session.add(patron)
+    db_handle.session.commit()
+    
+    # Check that everything exists
+    assert Patron.query.count() == 1
+    db_patron = Patron.query.first()
 
+    old_barcode = db_patron.barcode
+    db_patron.barcode = '111111'
+    db_handle.session.commit()
+
+    db_patron = Patron.query.first()
+    assert db_patron.barcode != old_barcode
 
 
 

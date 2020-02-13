@@ -10,7 +10,8 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 class Patron(db.Model):
-    barcode = db.Column(db.String(6), unique=True, nullable=False, primary_key=True)
+    id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
+    barcode = db.Column(db.String(6), unique=True, nullable=False)
     firstname = db.Column(db.String(64), nullable=False)
     lastname = db.Column(db.String(64), default=None)
     email = db.Column(db.String(64), unique=True, nullable=False)
@@ -22,7 +23,8 @@ class Patron(db.Model):
     holds = db.relationship("Hold", back_populates="patron")
 
 class Item(db.Model):
-    barcode = db.Column(db.String(6), unique=True, nullable=False, primary_key=True)
+    id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
+    barcode = db.Column(db.String(6), unique=True, nullable=False)
     title = db.Column(db.String(64), nullable=False)
     author = db.Column(db.String(64), default=None)
     pubyear = db.Column(db.Integer, nullable=False)
@@ -37,8 +39,8 @@ class Item(db.Model):
 
 class Loan(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
-    item_barcode = db.Column(db.String(6), db.ForeignKey("item.barcode", ondelete="CASCADE"), unique=True)
-    patron_barcode = db.Column(db.String(6), db.ForeignKey("patron.barcode"))
+    item_id = db.Column(db.Integer, db.ForeignKey("item.id", ondelete="CASCADE"), unique=True)
+    patron_id = db.Column(db.Integer, db.ForeignKey("patron.id"))
     loandate = db.Column(db.DateTime, nullable=False)
     renewaldate = db.Column(db.DateTime, default=None)
     duedate = db.Column(db.DateTime, nullable=False)
@@ -50,8 +52,8 @@ class Loan(db.Model):
 
 class Hold(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
-    item_barcode = db.Column(db.String(6), db.ForeignKey("item.barcode", ondelete="CASCADE"))
-    patron_barcode = db.Column(db.String(6), db.ForeignKey("patron.barcode"))
+    item_id = db.Column(db.Integer, db.ForeignKey("item.id", ondelete="CASCADE"))
+    patron_id = db.Column(db.Integer, db.ForeignKey("patron.id"))
     holddate = db.Column(db.DateTime, nullable=False)
     expirationdate = db.Column(db.DateTime, nullable=False)
     pickupdate = db.Column(db.DateTime, default=None)
@@ -236,8 +238,8 @@ def get_loans():
     for loan in loans:
         loanInfo = {}
         loanInfo['id'] = loan.id
-        loanInfo['item_barcode'] = loan.item_barcode
-        loanInfo['patron_barcode'] = loan.patron_barcode
+        loanInfo['item_id'] = loan.item_id
+        loanInfo['patron_id'] = loan.patron_id
         loanInfo['loandate'] = loan.loandate
         loanInfo['renewaldate'] = loan.renewaldate
         loanInfo['duedate'] = loan.duedate
@@ -260,8 +262,8 @@ def get_holds():
     for hold in holds:
         holdInfo = {}
         holdInfo['id'] = hold.id
-        holdInfo['item_barcode'] = hold.item_barcode
-        holdInfo['patron_barcode'] = hold.patron_barcode
+        holdInfo['item_id'] = hold.item_id
+        holdInfo['patron_id'] = hold.patron_id
         holdInfo['holddate'] = hold.holddate
         holdInfo['expirationdate'] = hold.expirationdate
         holdInfo['pickupdate'] = hold.pickupdate
