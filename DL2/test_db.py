@@ -54,7 +54,7 @@ def _get_loan():
     )
 
 def _get_hold():
-    return Loan(
+    return Hold(
         holddate=datetime.now(),
         expirationdate=datetime.now() + timedelta(days=100)
     )
@@ -98,6 +98,24 @@ def test_create_instances(db_handle):
     assert db_loan.item == item
     assert db_hold.patron == patron
     assert db_hold.item == item
-    assert db_sensor in db_deployment.sensors
-    assert db_deployment in db_sensor.deployments
-    assert db_measurement in db_sensor.measurements    
+    assert db_hold in db_patron.holds
+    assert db_loan in db_patron.loans
+    assert db_hold in db_item.holds
+    assert db_loan in db_item.loan
+
+def test_item_loan_one_to_one(db_handle):
+    """
+    Tests that the relationship between item and loan is one-to-one.
+    i.e. that we cannot assign the same item for two loans.
+    """
+    
+    item = _get_item()
+    loan_1 = _get_loan()
+    loan_2 = _get_loan()
+    loan_1.item = item
+    loan_2.item = item
+    db_handle.session.add(item)
+    db_handle.session.add(loan_1)
+    db_handle.session.add(loan_2)    
+    with pytest.raises(IntegrityError):
+        db_handle.session.commit()

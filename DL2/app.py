@@ -18,15 +18,15 @@ class Patron(db.Model):
     status = db.Column(db.String(64), nullable=False, default="Active")
     regdate = db.Column(db.DateTime, nullable=False)
     
-    loan = db.relationship("Loan", back_populates="patron")
+    loans = db.relationship("Loan", back_populates="patron")
     holds = db.relationship("Hold", back_populates="patron")
 
 class Item(db.Model):
     barcode = db.Column(db.String(6), unique=True, nullable=False, primary_key=True)
     title = db.Column(db.String(64), nullable=False)
-    author = db.Column(db.String(64))
+    author = db.Column(db.String(64), default=None)
     pubyear = db.Column(db.Integer, nullable=False)
-    format = db.Column(db.String(64), nullable=False)
+    format = db.Column(db.String(64), default="book", nullable=False)
     description = db.Column(db.String(512), nullable=False, default="")
     catdate = db.Column(db.DateTime, nullable=False)
     loantime = db.Column(db.Integer, nullable=False, default=28)
@@ -46,7 +46,7 @@ class Loan(db.Model):
     status = db.Column(db.String(64), default="Charged", nullable=False)
     
     item = db.relationship("Item", back_populates="loan")
-    patron = db.relationship("Patron", back_populates="loan")
+    patron = db.relationship("Patron", back_populates="loans")
 
 class Hold(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
