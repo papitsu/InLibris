@@ -25,13 +25,12 @@ class Item(db.Model):
     barcode = db.Column(db.String(6), unique=True, nullable=False, primary_key=True)
     title = db.Column(db.String(64), nullable=False)
     author = db.Column(db.String(64))
-    publisher = db.Column(db.String(64))
-    pubyear = db.Column(db.String(4), nullable=False)
+    pubyear = db.Column(db.Integer, nullable=False)
     format = db.Column(db.String(64), nullable=False)
-    description = db.Column(db.String(512), nullable=False)
+    description = db.Column(db.String(512), nullable=False, default="")
     catdate = db.Column(db.DateTime, nullable=False)
     loantime = db.Column(db.Integer, nullable=False, default=28)
-    renewals = db.Column(db.Integer, nullable=False, default=10)
+    renewlimit = db.Column(db.Integer, nullable=False, default=10)
     
     loan = db.relationship("Loan", back_populates="item")
     hold = db.relationship("Hold", back_populates="item")
@@ -56,7 +55,6 @@ class Hold(db.Model):
     holddate = db.Column(db.DateTime, nullable=False)
     expirationdate = db.Column(db.DateTime, nullable=False)
     pickupdate = db.Column(db.DateTime, default=None)
-    renewed = db.Column(db.Integer, default=0, nullable=False)
     status = db.Column(db.String(64), default="Requested", nullable=False)
     
     item = db.relationship("Item", back_populates="hold")
@@ -148,6 +146,7 @@ def add_item():
         return "Request content type must be JSON", 415
     if request.method != "POST":
         return "POST method required", 405
+
     if ("barcode" or "title" or "pubyear") not in request.json:
         return "Incomplete request - missing fields", 400
     if not (isinstance(request.json["barcode"], str) and isinstance(request.json["title"], str) and isinstance(request.json["pubyear"], str)):
@@ -162,11 +161,6 @@ def add_item():
         else:
             author = None
 
-        if "publisher" in request.json and isinstance(request.json["publisher"], str):
-            publisher = request.json["publisher"]
-        else:
-            publisher = None
-
         if "format" in request.json and isinstance(request.json["format"], str):
             format = request.json["format"]
         else:
@@ -175,35 +169,34 @@ def add_item():
         if "description" in request.json and isinstance(request.json["description"], str):
             description = request.json["description"]
         else:
-            description = None
+            description = ""
 
         if "loantime" in request.json and isinstance(request.json["loantime"], int):
             loantime = int(request.json["loantime"])
         else:
             loantime = 28
 
-        if "renewals" in request.json and isinstance(request.json["renewals"], int):
-            renewals = int(request.json["renewals"])
+        if "renewlimit" in request.json and isinstance(request.json["renewlimit"], int):
+            renewlimit = int(request.json["renewlimit"])
         else:
-            renewals = 10
+            renewlimit = 10
 
         item = Item(
             barcode=barcode,
             title=title,
             author=author,
-            publisher=publisher,
             pubyear=pubyear,
             format=format,
             description=description,
             catdate=datetime.now(),
             loantime=loantime,
-            renewals=renewals
+            renewlimit=renewlimit
         )
 
         db.session.add(item)
         db.session.commit()
         return "", 201
-        
+
     except Exception as e:
         return str(e), 409
 
@@ -221,13 +214,58 @@ def get_items():
         itemInfo['barcode'] = item.barcode
         itemInfo['title'] = item.title
         itemInfo['author'] = item.author
-        itemInfo['publisher'] = item.publisher
         itemInfo['pubyear'] = item.pubyear
         itemInfo['format'] = item.format
         itemInfo['description'] = item.description
         itemInfo['catdate'] = item.catdate
         itemInfo['loantime'] = item.loantime
-        itemInfo['renewals'] = item.renewals
+        itemInfo['renewlimit'] = item.renewlimit
         itemList.append(itemInfo)
 
     return json.dumps(itemList, indent=4, default=str), 200
+
+@app.route("/loans/", methods=["GET"])
+def get_loans():
+    if request.method != "GET":
+        return "GET method required", 405
+
+    loans = Loan.query.all()
+    
+    loanList = []
+
+    for loan in loans:
+        loanInfo = {}
+        loanInfo['id'] = loan.id
+        loanInfo['item_barcode'] = loan.item_barcode
+        loanInfo['patron_barcode'] = loan.patron_barcode
+        loanInfo['loandate'] = loan.loandate
+        loanInfo['renewaldate'] = loan.renewaldate
+        loanInfo['duedate'] = loan.duedate
+        loanInfo['renewed'] = loan.renewed
+        loanInfo['status'] = loan.status
+        loanList.append(loanInfo)
+
+    return json.dumps(loanList, indent=4, default=str), 200
+
+
+@app.route("/holds/", methods=["GET"])
+def get_holds():
+    if request.method != "GET":
+        return "GET method required", 405
+
+    holds = Hold.query.all()
+    
+    holdList = []
+
+    for hold in holds:
+        holdInfo = {}
+        holdInfo['id'] = hold.id
+        holdInfo['item_barcode'] = hold.item_barcode
+        holdInfo['patron_barcode'] = hold.patron_barcode
+        holdInfo['holddate'] = hold.holddate
+        holdInfo['expirationdate'] = hold.expirationdate
+        holdInfo['pickupdate'] = hold.pickupdate
+        holdInfo['status'] = hold.status
+        holdList.append(holdInfo)
+
+    return json.dumps(holdList, indent=4, default=str), 200
