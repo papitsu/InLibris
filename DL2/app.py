@@ -19,7 +19,7 @@ class Patron(db.Model):
     regdate = db.Column(db.DateTime, nullable=False)
     
     loan = db.relationship("Loan", back_populates="patron")
-    hold = db.relationship("Hold", back_populates="patron")
+    holds = db.relationship("Hold", back_populates="patron")
 
 class Item(db.Model):
     barcode = db.Column(db.String(6), unique=True, nullable=False, primary_key=True)
@@ -33,7 +33,7 @@ class Item(db.Model):
     renewlimit = db.Column(db.Integer, nullable=False, default=10)
     
     loan = db.relationship("Loan", back_populates="item")
-    hold = db.relationship("Hold", back_populates="item")
+    holds = db.relationship("Hold", back_populates="item")
 
 class Loan(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)
@@ -57,8 +57,8 @@ class Hold(db.Model):
     pickupdate = db.Column(db.DateTime, default=None)
     status = db.Column(db.String(64), default="Requested", nullable=False)
     
-    item = db.relationship("Item", back_populates="hold")
-    patron = db.relationship("Patron", back_populates="hold")
+    item = db.relationship("Item", back_populates="holds")
+    patron = db.relationship("Patron", back_populates="holds")
 
 @app.route("/hello/<name>/")
 def hello(name):
