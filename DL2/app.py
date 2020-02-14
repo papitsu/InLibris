@@ -62,6 +62,11 @@ class Hold(db.Model):
     item = db.relationship("Item", back_populates="holds")
     patron = db.relationship("Patron", back_populates="holds")
 
+'''
+Here are some non-required and non-documented, completely unnecessary view functions
+I created for my personal interest and learning and testing. Can be ignored.
+'''
+
 @app.route("/hello/<name>/")
 def hello(name):
     return "Hello {}".format(name)
