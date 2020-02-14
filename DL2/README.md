@@ -10,11 +10,9 @@ Database was implemented using Flask-SQLAlchemy with Python 3.7
 |**test_db.py** | A pytest script for testing the database
 |**requirements.txt** | External Python libraries required to run the database
 
-### Dependencies (as listed in "requirements.txt")
+### Dependencies 
 
-*
-*
-*
+* listed in "requirements.txt"
 
 ### Setting up the environment:
 
