@@ -5,7 +5,7 @@
 * **ASSISTANTS:** Mika Oja
 
 ### Minutes
-* Discussed with assitant about the complexity of the plan and agreed that it sounds like a good size project for a one-person team.
+* Discussed with assitant about the complexity of the plan and agreed that it sounds like a good-sized project for a one-person team.
 * Asked some questions about the requirements for DL2 and received good answers which will help me finish it.
 * Received encouragement and green light about the overall plan and feel more confident going forward.
 
