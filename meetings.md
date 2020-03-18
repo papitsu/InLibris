@@ -16,28 +16,34 @@ No specific action points were brought up. Keep going forward with the same idea
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
 ## Meeting 2.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 24.2.2020
+* **ASSISTANTS:** Mika Oja
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+* Went through the DL2 submission with assistant focusing on the requirements and grading. Got a better idea about what is actually required.
+* Discussed any thoughts about DL3. Felt confident about the next assignment.
 
 ### Action points
-*List here the actions points discussed with assistants*
-
+No specific action points were brought up. Keep going forward with the same idea and finish DL3.
 
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
 ## Meeting 3.
-* **DATE:**
-* **ASSISTANTS:**
+* **DATE:** 18.3.2020
+* **ASSISTANTS:** Mika Oja
 
 ### Minutes
-*Summary of what was discussed during the meeting*
+* Went through the DL3 submission with assistant focusing on the requirements.
+* Received good notes and tips as well as new ideas:
+1. New hold or loan can also be implemented with PUT instead of POST
+2. Editing a book was missing a 409 conflict when barcode is already in use.
+3. JSON Schema allows string formats "email" and "date", so no custom regex is needed
+4. "Pubyear" had some conflicting use of string and integer formats.
 
 ### Action points
-*List here the actions points discussed with assistants*
+* Fix issues with DL3
+* Keep going forward with DL4
 
 
 ### Comments from staff
