@@ -1,6 +1,13 @@
 # Meetings notes
 
 ## Meeting 1.
+
+<details>
+<summary>
+  <strong>Details</strong>
+</summary>
+<bloquote>
+
 * **DATE:** 13.2.2020
 * **ASSISTANTS:** Mika Oja
 
@@ -14,8 +21,17 @@ No specific action points were brought up. Keep going forward with the same idea
 
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
+</bloquote>
+</details>
 
 ## Meeting 2.
+
+<details>
+<summary>
+  <strong>Details</strong>
+</summary>
+<bloquote>
+
 * **DATE:** 24.2.2020
 * **ASSISTANTS:** Mika Oja
 
@@ -29,7 +45,17 @@ No specific action points were brought up. Keep going forward with the same idea
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
+</bloquote>
+</details>
+
 ## Meeting 3.
+
+<details>
+<summary>
+  <strong>Details</strong>
+</summary>
+<bloquote>
+
 * **DATE:** 18.3.2020
 * **ASSISTANTS:** Mika Oja
 
@@ -45,11 +71,20 @@ No specific action points were brought up. Keep going forward with the same idea
 * Fix issues with DL3
 * Keep going forward with DL4
 
-
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
+
+</bloquote>
+</details>
 
 ## Meeting 4.
+
+<details>
+<summary>
+  <strong>Details</strong>
+</summary>
+<bloquote>
+
 * **DATE:**
 * **ASSISTANTS:**
 
@@ -59,11 +94,20 @@ No specific action points were brought up. Keep going forward with the same idea
 ### Action points
 *List here the actions points discussed with assistants*
 
-
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
+
+</bloquote>
+</details>
 
 ## Midterm meeting
+
+<details>
+<summary>
+  <strong>Details</strong>
+</summary>
+<bloquote>
+
 * **DATE:**
 * **ASSISTANTS:**
 
@@ -73,11 +117,20 @@ No specific action points were brought up. Keep going forward with the same idea
 ### Action points
 *List here the actions points discussed with assistants*
 
-
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
+
+</bloquote>
+</details>
 
 ## Final meeting
+
+<details>
+<summary>
+  <strong>Details</strong>
+</summary>
+<bloquote>
+
 * **DATE:**
 * **ASSISTANTS:**
 
@@ -91,3 +144,5 @@ No specific action points were brought up. Keep going forward with the same idea
 ### Comments from staff
 *ONLY USED BY COURSE STAFF: Additional comments from the course staff*
 
+</bloquote>
+</details>
