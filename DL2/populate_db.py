@@ -5,9 +5,9 @@ db.create_all()
 
 patron1 = Patron(
     barcode="100001",
-    firstname="Panu",
-    lastname="Mölsä",
-    email="panu.molsa@student.oulu.fi",
+    firstname="Hilma",
+    lastname="Kirjastontäti",
+    email="hilma@kirjasto.fi",
     group="Staff",
     status="Active",
     regdate=datetime(2020,1,1,13,37,00)
