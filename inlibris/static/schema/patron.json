@@ -1,0 +1,32 @@
+{
+    "type": "object",
+    "properties": {
+        "barcode": {
+            "description": "Library card barcode",
+            "type": "string"
+        },
+        "firstname": {
+            "description": "Patron's first name",
+            "type": "string"
+        },
+        "lastname": {
+            "description": "Patron's last name",
+            "type": "string"
+        },
+        "email": {
+            "description": "Patron's email",
+            "type": "email"
+        },
+        "group": {
+            "description": "Patron's user group (Customer or Staff)",
+            "type": "string",
+            "default": "Customer"
+        },
+        "status": {
+            "description": "Patron's user status (Active, Suspended or Expired)",
+            "type": "string",
+            "default": "Active"
+        }
+    },
+    "required": ["barcode", "firstname", "email"]
+}
