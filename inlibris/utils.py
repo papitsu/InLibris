@@ -8,6 +8,27 @@ from flask_sqlalchemy import SQLAlchemy
 from inlibris.models import Patron, Book, Hold, Loan
 from inlibris.constants import *
 
+'''
+# Needed this in development, don't need it now
+# Still keeping it here in case I need it again
+
+def without_keys(d, keys):
+    """
+    Return a copy of a dictionary "d" excluding keys specified in list "keys".
+    
+    Source: https://stackoverflow.com/a/31434038
+    """
+    
+    return {x: d[x] for x in d if x not in keys}
+'''
+
+def date_converter(date_str):
+    """
+    Convert a date string "YYYY-MM-DD" to datetime object.
+    """
+
+    return datetime.strptime(date_str, "%Y-%m-%d").date()
+
 class MasonBuilder(dict):
     """
     A convenience class for managing dictionaries that represent Mason
@@ -15,6 +36,9 @@ class MasonBuilder(dict):
     elements into the object but mostly is just a parent for the much more
     useful subclass defined next. This class is generic in the sense that it
     does not contain any application specific implementation details.
+
+    Taken straight from course material:
+    https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/implementing-rest-apis-with-flask/
     """
 
     def add_error(self, title, details):
@@ -73,18 +97,10 @@ class MasonBuilder(dict):
         self["@controls"][ctrl_name]["href"] = href
 
 class LibraryBuilder(MasonBuilder):
-
-    '''
-    @staticmethod
-    def schema(filename):
-        schema = None
-        if filename:
-            with open(filename, 'r') as f:
-                schema = json.load(f)
-        else:
-            print("schema not found for filename {}".format(filename))
-    return schema
-    '''
+    """
+    An application specific subclass for MasonBuilder to manage adding
+    hypermedia controls to json documents.
+    """
 
     @staticmethod
     def patron_schema():    
@@ -124,8 +140,8 @@ class LibraryBuilder(MasonBuilder):
             "type": "string",
             "default": "Active",
             "enum": ["Active", "Suspended", "Expired"]
-
         }
+        
         return schema
 
     @staticmethod
@@ -179,15 +195,9 @@ class LibraryBuilder(MasonBuilder):
     def edit_loan_schema():    
         schema = {
             "type": "object",
-            "required": ["book_barcode", "patron_barcode", "loandate", "duedate"]
+            "required": ["patron_barcode", "loandate", "duedate"]
         }
         props = schema["properties"] = {}
-        props["book_barcode"] = {
-            "description": "Book's unique barcode",
-            "type": "integer",
-            "minimum": 200000,
-            "maximum": 299999
-        }
         props["patron_barcode"] = {
             "description": "Patron's unique barcode",
             "type": "integer",
@@ -202,7 +212,8 @@ class LibraryBuilder(MasonBuilder):
         props["renewaldate"] = {
             "description": "When last renewed",
             "type": "string",
-            "format": "date"
+            "format": "date",
+            "default": None
         }
         props["duedate"] = {
             "description": "When book is due",
@@ -242,6 +253,8 @@ class LibraryBuilder(MasonBuilder):
         }
         return schema
 
+    '''
+    # Commented out due to holds not being implemented
     @staticmethod
     def edit_hold_schema():    
         schema = {
@@ -283,7 +296,10 @@ class LibraryBuilder(MasonBuilder):
             "enum": ["Requested", "On hold"]
         }
         return schema
+    '''
 
+    '''
+    # Commented out due to holds not being implemented
     @staticmethod
     def add_hold_schema():    
         schema = {
@@ -303,6 +319,7 @@ class LibraryBuilder(MasonBuilder):
             "format": "date"
         }
         return schema
+    '''
 
     def add_control_all_patrons(self):
         self.add_control(
@@ -344,6 +361,8 @@ class LibraryBuilder(MasonBuilder):
             title="Delete this loan"
         )
 
+    '''
+    # Commented out due to holds not being implemented
     def add_control_delete_hold(self, patron_id, hold_id):
         self.add_control(
             "inlibris:delete",
@@ -351,6 +370,7 @@ class LibraryBuilder(MasonBuilder):
             method="DELETE",
             title="Delete this hold"
         )
+    '''
 
     def add_control_add_patron(self):
         self.add_control(
@@ -400,6 +420,26 @@ class LibraryBuilder(MasonBuilder):
             method="GET"
         )
 
+    def add_control_add_loan(self, patron_id):
+        self.add_control(
+            "inlibris:add-loan",
+            "/api/patrons/%s/loans/" % patron_id,
+            method="POST",
+            encoding="json",
+            title="Add a new loan to this patron",
+            schema=self.add_loan_schema()
+        )
+
+    def add_control_edit_loan(self, book_id):
+        self.add_control(
+            "edit",
+            "/api/books/%s/loan/" % book_id,
+            title="Edit this loan",
+            encoding="json",
+            method="PUT",
+            schema=self.edit_loan_schema()
+        )
+
     def add_control_holds_by(self, patron_id):
         self.add_control(
             "inlibris:holds-by",
@@ -423,95 +463,24 @@ class LibraryBuilder(MasonBuilder):
             title="Holds on book",
             method="GET"
         )
+
+    def add_control_target_book(self, book_id):
+        self.add_control(
+            "inlibris:target-book",
+            "/api/books/%s/" % book_id,
+            title="Target book",
+            method="GET"
+        )
+
 def create_error_response(status_code, title, message=None):
+    """
+    An HTTP error response in MASON hypermedia format.
+
+    Taken straight from course material:
+    https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/implementing-rest-apis-with-flask/
+    """
     resource_url = request.path
     body = MasonBuilder(resource_url=resource_url)
     body.add_error(title, message)
     body.add_control("profile", href=ERROR_PROFILE)
     return Response(json.dumps(body), status_code, mimetype=MASON)
-
-
-def _populate_db(db):
-    patron1 = Patron(
-        barcode="100001",
-        firstname="Hilma",
-        lastname="Kirjastontäti",
-        email="hilma@kirjasto.fi",
-        group="Staff",
-        status="Active",
-        regdate=datetime(2020,1,1)
-    )
-
-    patron2 = Patron(
-        barcode="100002",
-        firstname="Testi",
-        lastname="Käyttäjä",
-        email="kayttaja@test.com",
-        regdate=datetime(1999,12,31)
-    )
-
-    item1 = Book(
-        barcode="200001",
-        title="Garpin maailma",
-        author="Irving, John",
-        pubyear=2011,
-        format="book",
-        description="ISBN 978-951-31-1264-6"
-    )
-
-    item2 = Book(
-        barcode="200002",
-        title="Minä olen monta",
-        author="Irving, John",
-        pubyear=2013,
-        format="book",
-        description="ISBN 978-951-31-7092-9"
-    )
-
-    item3 = Book(
-        barcode="200003",
-        title="Oman elämänsä sankari",
-        author="Irving, John",
-        pubyear=2009,
-        format="book",
-        description="ISBN 978-951-31-6307-8"
-    )
-
-    loan1 = Loan(
-        book=item1,
-        patron=patron2,
-        loandate=datetime.now().date(),
-        duedate=datetime.now() + timedelta(days=28)
-    )
-
-    loan2 = Loan(
-        book=item3,
-        patron=patron2,
-        loandate=datetime.now().date(),
-        duedate=(datetime.now() + timedelta(days=28)).date()
-    )
-
-    hold1 = Hold(
-        book=item1,
-        patron=patron1,
-        holddate=datetime.now().date(),
-        expirationdate=(datetime.now() + timedelta(days=45)).date()
-    )
-
-    hold2 = Hold(
-        book=item3,
-        patron=patron1,
-        holddate=(datetime.now() + timedelta(hours=1)).date(),
-        expirationdate=(datetime.now() + timedelta(hours=1, days=45)).date()
-    )
-
-    db.session.add(patron1)
-    db.session.add(patron2)
-    db.session.add(item1)
-    db.session.add(item2)
-    db.session.add(item3)
-    db.session.add(loan1)
-    db.session.add(loan2)
-    db.session.add(hold1)
-    db.session.add(hold2)
-    db.session.commit()

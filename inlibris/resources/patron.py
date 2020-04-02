@@ -64,25 +64,22 @@ class PatronItem(Resource):
                 "Patron does not exist"
             )
 
-        try:
-            patron = Patron.query.filter_by(id=patron_id).first()
-            regdate = patron.regdate
+        patron = Patron.query.filter_by(id=patron_id).first()
+        regdate = patron.regdate
 
-            db.session.delete(patron)
-            db.session.commit()
+        db.session.delete(patron)
+        db.session.commit()
 
-            patron = Patron(
-                id=patron_id,
-                regdate=regdate,
-                **request.json
-            )
+        patron = Patron(
+            id=patron_id,
+            regdate=regdate,
+            **request.json
+        )
 
-            db.session.add(patron)
-            db.session.commit()
+        db.session.add(patron)
+        db.session.commit()
 
-            return Response(status=204)
-        except Exception as e:
-            return create_error_response(409, "Error", str(e))   
+        return Response(status=204) 
 
     def delete(self, patron_id):
         if not Patron.query.filter_by(id=patron_id).all():
@@ -151,18 +148,15 @@ class PatronCollection(Resource):
                 "There is already a patron with the email '{}' in the collection".format(request.json["email"])
             )
     
-        try:
-            patron = Patron(
-                regdate=datetime.now().date(),
-                **request.json
-            )
+        patron = Patron(
+            regdate=datetime.now().date(),
+            **request.json
+        )
 
-            db.session.add(patron)
-            db.session.commit()
-            
-            headerDictionary = {}
-            headerDictionary['Location'] = url_for("api.patronitem", patron_id=Patron.query.filter_by(barcode=request.json["barcode"]).first().id)
-            
-            return Response(status=201, headers=headerDictionary)
-        except Exception as e:
-            return create_error_response(409, "Error", str(e))
+        db.session.add(patron)
+        db.session.commit()
+        
+        headerDictionary = {}
+        headerDictionary['Location'] = url_for("api.patronitem", patron_id=Patron.query.filter_by(barcode=request.json["barcode"]).first().id)
+        
+        return Response(status=201, headers=headerDictionary)

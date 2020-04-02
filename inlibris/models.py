@@ -11,7 +11,7 @@ from inlibris import db
 @with_appcontext
 def init_db_command():
     db.create_all()
-    from inlibris.utils import _populate_db
+    from tests.utils import _populate_db
     _populate_db(db)
     click.echo('Initialized the database.')
 
@@ -21,10 +21,17 @@ def reset_db_command():
     db.reflect()
     db.drop_all()
     db.create_all()
-    from inlibris.utils import _populate_db
+    from tests.utils import _populate_db
     _populate_db(db)
     click.echo('Reseted the database.')
 
+@click.command("clear-db")
+@with_appcontext
+def clear_db_command():
+    db.reflect()
+    db.drop_all()
+    db.create_all()
+    click.echo('Cleared the database.')
 
 class Patron(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)

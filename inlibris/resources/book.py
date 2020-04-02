@@ -64,24 +64,21 @@ class BookItem(Resource):
                 "Barcode reserved",
                 "Another book already has a barcode '{}'".format(request.json["barcode"])
             )
-        
-        try:
-            book = Book.query.filter_by(id=book_id).first()
 
-            db.session.delete(book)
-            db.session.commit()
+        book = Book.query.filter_by(id=book_id).first()
 
-            book = Book(
-                id=book_id,
-                **request.json
-            )
+        db.session.delete(book)
+        db.session.commit()
 
-            db.session.add(book)
-            db.session.commit()
+        book = Book(
+            id=book_id,
+            **request.json
+        )
 
-            return Response(status=204)
-        except Exception as e:
-            return create_error_response(409, "Error", str(e))   
+        db.session.add(book)
+        db.session.commit()
+
+        return Response(status=204)
 
     def delete(self, book_id):
         if not Book.query.filter_by(id=book_id).all():
@@ -146,17 +143,14 @@ class BookCollection(Resource):
                 "Barcode '{}' already exists on another book.".format(request.json["barcode"])
             )
     
-        try:
-            book = Book(
-                **request.json
-            )
+        book = Book(
+            **request.json
+        )
 
-            db.session.add(book)
-            db.session.commit()
-            
-            headerDictionary = {}
-            headerDictionary['Location'] = url_for("api.bookitem", book_id=Book.query.filter_by(barcode=request.json["barcode"]).first().id)
-            
-            return Response(status=201, headers=headerDictionary)
-        except Exception as e:
-            return create_error_response(409, "Error", str(e))
+        db.session.add(book)
+        db.session.commit()
+        
+        headerDictionary = {}
+        headerDictionary['Location'] = url_for("api.bookitem", book_id=Book.query.filter_by(barcode=request.json["barcode"]).first().id)
+        
+        return Response(status=201, headers=headerDictionary)

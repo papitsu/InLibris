@@ -2,8 +2,10 @@
     "type": "object",
     "properties": {
         "barcode": {
-            "description": "Library card barcode",
-            "type": "string"
+            "description": "Patron's unique barcode",
+            "type": "integer",
+            "minimum": 100000,
+            "maximum": 199999
         },
         "firstname": {
             "description": "Patron's first name",
@@ -15,17 +17,21 @@
         },
         "email": {
             "description": "Patron's email",
-            "type": "email"
+            "type": "string",
+            "format": "email",
+            "pattern": "[a-z0-9\._%+!$&*=^|~#%{}\\-]+@([a-z0-9\-]+\.){1,}([a-z]{2,22})$"
         },
         "group": {
             "description": "Patron's user group (Customer or Staff)",
             "type": "string",
-            "default": "Customer"
+            "default": "Customer",
+            "enum": ["Customer", "Staff"]
         },
         "status": {
             "description": "Patron's user status (Active, Suspended or Expired)",
             "type": "string",
-            "default": "Active"
+            "default": "Active",
+            "enum": ["Active", "Suspended", "Expired"]
         }
     },
     "required": ["barcode", "firstname", "email"]
