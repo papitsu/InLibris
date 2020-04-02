@@ -1,4 +1,3 @@
-
 import os
 import pytest
 import json
@@ -42,7 +41,7 @@ def client():
 
 class TestEntryPoint(object):
     """
-    This class implements tests for each HTTP method in API entry point.
+    This class tests the API entry point.
     """
 
     RESOURCE_URL = "/api/"
@@ -64,6 +63,13 @@ class TestPatronCollection(object):
     RESOURCE_URL = "/api/patrons/"
 
     def test_get(self, client):
+        """
+        Tests the GET method. Checks that the response status code is 200, and
+        then checks that all of the expected attributes and controls are
+        present, and the controls work. Also checks that all of the items from
+        the DB population are present, and their controls.
+        """
+
         resp = client.get(self.RESOURCE_URL)
         assert resp.status_code == 200
         body = json.loads(resp.data)
@@ -123,7 +129,11 @@ class TestPatronCollection(object):
         assert resp.status_code == 400
 
 class TestPatronItem(object):
-    
+    """
+    This class implements tests for each HTTP method in patron item
+    resource. 
+    """
+
     RESOURCE_URL = "/api/patrons/1/"
     INVALID_URL = "/api/patrons/15/"
     
@@ -131,8 +141,7 @@ class TestPatronItem(object):
         """
         Tests the GET method. Checks that the response status code is 200, and
         then checks that all of the expected attributes and controls are
-        present, and the controls work. Also checks that all of the items from
-        the DB population are present, and their controls.
+        present, and the controls work.
         """
 
         resp = client.get(self.RESOURCE_URL)
@@ -275,7 +284,11 @@ class TestBookCollection(object):
 
 
 class TestBookItem(object):
-    
+    """
+    This class implements tests for each HTTP method in book item
+    resource. 
+    """
+
     RESOURCE_URL = "/api/books/1/"
     INVALID_URL = "/api/books/14/"
 
@@ -283,8 +296,7 @@ class TestBookItem(object):
         """
         Tests the GET method. Checks that the response status code is 200, and
         then checks that all of the expected attributes and controls are
-        present, and the controls work. Also checks that all of the items from
-        the DB population are present, and their controls.
+        present, and the controls work.
         """
 
         resp = client.get(self.RESOURCE_URL)
@@ -352,6 +364,10 @@ class TestBookItem(object):
         assert resp.status_code == 404
 
 class TestLoanItem(object):
+    """
+    This class implements tests for each HTTP method in loan item
+    resource. 
+    """
 
     RESOURCE_URL = "/api/books/1/loan/"
     NOT_LOANED_URL = "/api/books/3/loan/"
@@ -361,8 +377,7 @@ class TestLoanItem(object):
         """
         Tests the GET method. Checks that the response status code is 200, and
         then checks that all of the expected attributes and controls are
-        present, and the controls work. Also checks that all of the items from
-        the DB population are present, and their controls.
+        present, and the controls work.
         """
 
         resp = client.get(self.RESOURCE_URL)
@@ -475,6 +490,13 @@ class TestLoansByPatron(object):
     NO_PATRON_URL = "/api/patrons/13/loans/"
 
     def test_get(self, client):
+        """
+        Tests the GET method. Checks that the response status code is 200, and
+        then checks that all of the expected attributes and controls are
+        present, and the controls work. Also checks that all of the items from
+        the DB popluation are present, and their controls.
+        """
+
         resp = client.get(self.RESOURCE_URL)
         assert resp.status_code == 200
         body = json.loads(resp.data)
