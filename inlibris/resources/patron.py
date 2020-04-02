@@ -54,8 +54,8 @@ class PatronItem(Resource):
         if (Patron.query.filter_by(barcode=request.json["barcode"]).all()
             and int(Patron.query.filter_by(barcode=request.json["barcode"]).first().id) != int(patron_id)):
             return create_error_response(409,
-                "Patron barcode already taken",
-                "Trying to change the patron barcode to one already taken"
+                "Patron barcode reserved",
+                "Another patron already has a barcode '{}'".format(request.json["barcode"])
             )
         
         if not Patron.query.filter_by(id=patron_id).all():
@@ -115,7 +115,7 @@ class PatronCollection(Resource):
             item.add_control("profile", PATRON_PROFILE)
             body["items"].append(item)
 
-        body.add_namespace("inlibris", LINK_RELATIONS_URL + "#")
+        body.add_namespace("inlibris", LINK_RELATIONS_URL)
         body.add_control("self", url_for("api.patroncollection"))
         body.add_control("profile", PATRON_PROFILE)
         body.add_control_add_patron()

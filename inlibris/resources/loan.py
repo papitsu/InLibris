@@ -76,13 +76,15 @@ class LoanItem(Resource):
                 "Book not found", 
                 None
             )
-
+            
+        '''
         barcode_book = Book.query.filter_by(barcode=request.json["book_barcode"]).first()
         if int(barcode_book.id) != int(book_id):
             return create_error_response(409,
                 "Invalid book barcode",
                 None
             )
+        '''
 
         loan = Loan.query.filter_by(book_id=book_id).first()
         if loan is None:
@@ -144,6 +146,15 @@ class LoanItem(Resource):
 
 class LoansByPatron(Resource):
     def get(self, patron_id):
+
+        patron = Patron.query.filter_by(id=patron_id).first()
+
+        if patron is None:
+            return create_error_response(404,
+                "Patron not found", 
+                None
+            )
+
         loans = Loan.query.filter_by(patron_id=patron_id).all()
         body = LibraryBuilder(items=[])
 
@@ -166,7 +177,7 @@ class LoansByPatron(Resource):
             item.add_control("profile", LOAN_PROFILE)
             body["items"].append(item)
 
-        body.add_namespace("inlibris", LINK_RELATIONS_URL + "#")
+        body.add_namespace("inlibris", LINK_RELATIONS_URL)
         body.add_control("self", url_for("api.loansbypatron", patron_id=patron_id))
         body.add_control("author", url_for("api.patronitem", patron_id=patron_id))
         body.add_control("profile", LOAN_PROFILE)

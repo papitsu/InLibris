@@ -141,7 +141,7 @@ class LibraryBuilder(MasonBuilder):
             "default": "Active",
             "enum": ["Active", "Suspended", "Expired"]
         }
-        
+
         return schema
 
     @staticmethod
@@ -180,7 +180,7 @@ class LibraryBuilder(MasonBuilder):
             "default": ""
         }
         props["loantime"] = {
-            "description": "How long the book can be on loan at a time",
+            "description": "How many days the book can be on loan at a time",
             "type": "integer",
             "default": 28
         }

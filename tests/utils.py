@@ -121,7 +121,6 @@ def _get_edit_loan_json(book_barcode=200001, patron_barcode=100002):
     """
     
     return {
-        "book_barcode": book_barcode,
         "patron_barcode": patron_barcode,
         "loandate": "2020-03-03",
         "renewaldate": "2020-03-04",

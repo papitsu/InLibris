@@ -29,7 +29,7 @@ api.add_resource(HoldItem, "/patrons/<patron_id>/holds/<hold_id>/")
 @api_bp.route("/")
 def api_entrypoint():
     body = LibraryBuilder()
-    body.add_namespace("inlibris", LINK_RELATIONS_URL + "#")
+    body.add_namespace("inlibris", LINK_RELATIONS_URL)
     body.add_control_all_patrons()
     body.add_control_all_books()
     return Response(json.dumps(body), 200, mimetype=MASON)
