@@ -9,6 +9,12 @@ from sqlalchemy.exc import IntegrityError, StatementError
 
 from inlibris import create_app, db
 from inlibris.models import Patron, Book, Hold, Loan
+from tests import utils
+
+
+'''
+In this file there are tests for the database. Should be quite thorough.
+'''
 
 @event.listens_for(Engine, "connect")
 def set_sqlite_pragma(dbapi_connection, connection_record):
@@ -16,6 +22,9 @@ def set_sqlite_pragma(dbapi_connection, connection_record):
     cursor.execute("PRAGMA foreign_keys=ON")
     cursor.close()
 
+'''
+Test client fixture for testing the resources and their methods.
+'''
 @pytest.fixture(scope="session")
 def app():
     db_fd, db_fname = tempfile.mkstemp()
@@ -35,33 +44,6 @@ def app():
     os.close(db_fd)
     os.unlink(db_fname)
 
-def _get_patron(barcode=123456, email="test@test.com", firstname="Testi"):
-    return Patron(
-        barcode=barcode,
-        firstname=firstname,
-        email=email,
-        regdate=datetime.now().date()
-    )
-
-def _get_book(barcode=234567, pubyear=2020):
-    return Book(
-        barcode=barcode,
-        title="Testikirja",
-        pubyear=pubyear
-    )
-
-def _get_loan():
-    return Loan(
-        loandate=datetime.now().date(),
-        duedate=(datetime.now() + timedelta(days=28)).date()
-    )
-
-def _get_hold():
-    return Hold(
-        holddate=datetime.now().date(),
-        expirationdate=(datetime.now() + timedelta(days=100)).date()
-    )
-
 def test_create_instances(app):
     """
     Tests that we can create one instance of each model and save them to the
@@ -74,10 +56,10 @@ def test_create_instances(app):
         db.create_all()
 
         # Create everything
-        patron = _get_patron()
-        book = _get_book()
-        loan = _get_loan()
-        hold = _get_hold()
+        patron = utils._get_patron()
+        book = utils._get_book()
+        loan = utils._get_loan()
+        hold = utils._get_hold()
         loan.patron = patron
         loan.book = book
         hold.patron = patron
@@ -120,10 +102,10 @@ def test_delete_patron_and_item(app):
         db.create_all()
 
         # Create everything
-        patron1 = _get_patron()
-        patron2 = _get_patron(barcode=123789, email="test2@test.com")
-        book1 = _get_book()
-        book2 = _get_book(barcode=234789)
+        patron1 = utils._get_patron()
+        patron2 = utils._get_patron(barcode=123789, email="test2@test.com")
+        book1 = utils._get_book()
+        book2 = utils._get_book(barcode=234789)
         
         db.session.add(patron1)
         db.session.add(book1)
@@ -155,9 +137,9 @@ def test_loan_ondelete_patron(app):
         db.create_all()
 
         # Create everything
-        loan = _get_loan()
-        patron = _get_patron()
-        book = _get_book()
+        loan = utils._get_loan()
+        patron = utils._get_patron()
+        book = utils._get_book()
         loan.patron = patron
         loan.book = book
         db.session.add(loan)
@@ -181,9 +163,9 @@ def test_loan_ondelete_item(app):
         db.create_all()
         
         # Create everything
-        loan = _get_loan()
-        patron = _get_patron()
-        book = _get_book()
+        loan = utils._get_loan()
+        patron = utils._get_patron()
+        book = utils._get_book()
         loan.patron = patron
         loan.book = book
         db.session.add(loan)
@@ -214,11 +196,11 @@ def test_hold_ondelete_item(app):
         db.create_all()
 
         # Create everything
-        hold1 = _get_hold()
-        hold2 = _get_hold()
-        patron1 = _get_patron()
-        patron2 = _get_patron(barcode=123789, email="test2@test.com")
-        book = _get_book()
+        hold1 = utils._get_hold()
+        hold2 = utils._get_hold()
+        patron1 = utils._get_patron()
+        patron2 = utils._get_patron(barcode=123789, email="test2@test.com")
+        book = utils._get_book()
         hold1.patron = patron1
         hold1.book = book
         hold2.patron = patron2
@@ -255,9 +237,9 @@ def test_hold_ondelete_patron(app):
         db.create_all()
         
         # Create everything
-        hold = _get_hold()
-        patron = _get_patron()
-        book = _get_book()
+        hold = utils._get_hold()
+        patron = utils._get_patron()
+        book = utils._get_book()
         hold.patron = patron
         hold.book = book
         db.session.add(hold)
@@ -282,8 +264,8 @@ def test_uniqueness(app):
         db.create_all()
 
         # Patron barcode must be unique
-        patron1 = _get_patron(email="test1@test.com")
-        patron2 = _get_patron(email="test2@test.com")
+        patron1 = utils._get_patron(email="test1@test.com")
+        patron2 = utils._get_patron(email="test2@test.com")
         db.session.add(patron1)
         db.session.add(patron2)    
         with pytest.raises(IntegrityError):
@@ -292,8 +274,8 @@ def test_uniqueness(app):
         db.session.rollback()
 
         # Patron email must be unique
-        patron1 = _get_patron(barcode="123456")
-        patron2 = _get_patron(barcode="456789")
+        patron1 = utils._get_patron(barcode="123456")
+        patron2 = utils._get_patron(barcode="456789")
         db.session.add(patron1)
         db.session.add(patron2)    
         with pytest.raises(IntegrityError):
@@ -302,8 +284,8 @@ def test_uniqueness(app):
         db.session.rollback()
 
         # Book barcode must be unique
-        book1 = _get_book()
-        book2 = _get_book()
+        book1 = utils._get_book()
+        book2 = utils._get_book()
         db.session.add(book1)
         db.session.add(book2)    
         with pytest.raises(IntegrityError):
@@ -312,9 +294,9 @@ def test_uniqueness(app):
         db.session.rollback()
 
         # Loan must be one-to-one i.e. item_barcode must be unique
-        book = _get_book()
-        loan_1 = _get_loan()
-        loan_2 = _get_loan()
+        book = utils._get_book()
+        loan_1 = utils._get_loan()
+        loan_2 = utils._get_loan()
         loan_1.book = book
         loan_2.book = book
         db.session.add(book)
@@ -333,9 +315,9 @@ def test_query_filters(app):
         db.create_all()
 
         # Filter Patron queries by firstname, barcode and email
-        patron1 = _get_patron(barcode="123456")
-        patron2 = _get_patron(barcode="456789", email="test2@test.com")
-        patron3 = _get_patron(barcode="789456", email="test3@test.com", firstname="Jussi")
+        patron1 = utils._get_patron(barcode="123456")
+        patron2 = utils._get_patron(barcode="456789", email="test2@test.com")
+        patron3 = utils._get_patron(barcode="789456", email="test3@test.com", firstname="Jussi")
         db.session.add(patron1)
         db.session.add(patron2)    
         db.session.add(patron3)
@@ -348,9 +330,9 @@ def test_query_filters(app):
         assert Patron.query.filter(Patron.email!="test2@test.com").count() == 2
 
         # Filter Book queries
-        book1 = _get_book()
-        book2 = _get_book(barcode="234789")
-        book3 = _get_book(barcode="256789", pubyear=2018)
+        book1 = utils._get_book()
+        book2 = utils._get_book(barcode="234789")
+        book3 = utils._get_book(barcode="256789", pubyear=2018)
         db.session.add(book1)
         db.session.add(book2)   
         db.session.add(book3)   
@@ -362,8 +344,8 @@ def test_query_filters(app):
         assert Book.query.filter(Book.pubyear>2019).count() == 2
 
         # Filter Loan queries
-        loan1 = _get_loan()
-        loan2 = _get_loan()
+        loan1 = utils._get_loan()
+        loan2 = utils._get_loan()
         loan1.book = book1
         loan1.patron = patron1
         loan2.book = book2
@@ -377,8 +359,8 @@ def test_query_filters(app):
         assert Loan.query.filter_by(book_id=book1.id).count() == 1
 
         # Filter Hold queries
-        hold1 = _get_hold()
-        hold2 = _get_hold()
+        hold1 = utils._get_hold()
+        hold2 = utils._get_hold()
         hold1.book = book1
         hold1.patron = patron3
         hold2.book = book1
@@ -403,7 +385,7 @@ def test_update_patron_barcode(app):
         db.create_all()
         
         # Create everything
-        patron = _get_patron()
+        patron = utils._get_patron()
         db.session.add(patron)
         db.session.commit()
         
@@ -429,7 +411,7 @@ def test_update_item_barcode(app):
         db.create_all()
         
         # Create everything
-        book = _get_book()
+        book = utils._get_book()
         db.session.add(book)
         db.session.commit()
         
@@ -453,9 +435,9 @@ def test_update_loan_item(app):
         db.create_all()
         
         # Create everything
-        book1 = _get_book()
-        loan = _get_loan()
-        patron = _get_patron()
+        book1 = utils._get_book()
+        loan = utils._get_loan()
+        patron = utils._get_patron()
         loan.book = book1
         loan.patron = patron
         
@@ -472,7 +454,7 @@ def test_update_loan_item(app):
         old_book_id = db_loan.book_id
 
         # Change book associated with the loan and commit
-        book2 = _get_book(barcode="274185")
+        book2 = utils._get_book(barcode="274185")
         loan.book = book2
         db.session.add(book2)
         db.session.commit()
@@ -490,9 +472,9 @@ def test_update_hold_patron(app):
         db.create_all()
         
         # Create everything
-        book = _get_book()
-        hold = _get_hold()
-        patron1 = _get_patron()
+        book = utils._get_book()
+        hold = utils._get_hold()
+        patron1 = utils._get_patron()
         hold.book = book
         hold.patron = patron1
         
@@ -509,7 +491,7 @@ def test_update_hold_patron(app):
         old_patron_id = db_hold.patron_id
 
         # Change patron associated with the hold and commit
-        patron2 = _get_patron(barcode="123852", email="posti@posio.fi")
+        patron2 = utils._get_patron(barcode="123852", email="posti@posio.fi")
         hold.patron = patron2
         db.session.add(patron2)
         db.session.commit()
@@ -527,9 +509,9 @@ def test_delete_hold(app):
         db.create_all()
 
         # Create everything
-        book = _get_book()
-        hold = _get_hold()
-        patron = _get_patron()
+        book = utils._get_book()
+        hold = utils._get_hold()
+        patron = utils._get_patron()
         hold.book = book
         hold.patron = patron
         
@@ -561,9 +543,9 @@ def test_delete_loan(app):
         db.create_all()
     
         # Create everything
-        book = _get_book()
-        loan = _get_loan()
-        patron = _get_patron()
+        book = utils._get_book()
+        loan = utils._get_loan()
+        patron = utils._get_patron()
         loan.book = book
         loan.patron = patron
         

@@ -1,0 +1,17 @@
+{
+    "type": "object",
+    "properties": {
+        "book_barcode": {
+            "description": "Book's unique barcode",
+            "type": "integer",
+            "minimum": 200000,
+            "maximum": 299999
+        },
+        "duedate": {
+            "description": "Loan's duedate",
+            "type": "string",
+            "format": "date"
+        }
+    },
+    "required": ["book_barcode"]
+}

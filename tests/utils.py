@@ -94,6 +94,10 @@ def _populate_db(db):
     db.session.add(hold2)
     db.session.commit()
 
+'''
+Helper functions for API testing.
+'''
+
 def _get_patron_json(barcode=123456, email="test@test.com", firstname="Testi"):
     """
     Creates a valid patron JSON object to be used for PUT and POST tests.
@@ -299,3 +303,34 @@ def _check_control_post_loan_method(ctrl, client, obj):
     validate(body, schema)
     resp = client.post(href, json=body)
     assert resp.status_code == 201
+
+'''
+Helper functions for database testing.
+'''
+
+def _get_patron(barcode=123456, email="test@test.com", firstname="Testi"):
+    return Patron(
+        barcode=barcode,
+        firstname=firstname,
+        email=email,
+        regdate=datetime.now().date()
+    )
+
+def _get_book(barcode=234567, pubyear=2020):
+    return Book(
+        barcode=barcode,
+        title="Testikirja",
+        pubyear=pubyear
+    )
+
+def _get_loan():
+    return Loan(
+        loandate=datetime.now().date(),
+        duedate=(datetime.now() + timedelta(days=28)).date()
+    )
+
+def _get_hold():
+    return Hold(
+        holddate=datetime.now().date(),
+        expirationdate=(datetime.now() + timedelta(days=100)).date()
+    )

@@ -1,0 +1,44 @@
+{
+    "type": "object",
+    "properties": {
+        "barcode": {
+            "description": "Book's unique barcode",
+            "type": "integer",
+            "minimum": 200000,
+            "maximum": 299999
+        },
+        "title": {
+            "description": "Book's title",
+            "type": "string"
+        },
+        "author": {
+            "description": "Book's author",
+            "type": "string"
+        },
+        "pubyear": {
+            "description": "Book's publishing year",
+            "type": "integer"
+        },
+        "format": {
+            "description": "The book's format, e.g. 'CD', 'DVD', 'video game'",
+            "type": "string",
+            "default": "book"
+        },
+        "description": {
+            "description": "Book's description (e.g. ISBN)",
+            "type": "string",
+            "default": ""
+        },
+        "loantime": {
+            "description": "How many days the book can be on loan at a time",
+            "type": "integer",
+            "default": 28
+        },
+        "renewlimit": {
+            "description": "How many times the book can be renewed",
+            "type": "integer",
+            "default": 10
+        }
+    },
+    "required": ["barcode", "title", "pubyear"]
+}

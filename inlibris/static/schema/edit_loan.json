@@ -1,0 +1,39 @@
+{
+    "type": "object",
+    "properties": {
+        "patron_barcode": {
+            "description": "Patron's unique barcode",
+            "type": "integer",
+            "minimum": 100000,
+            "maximum": 199999
+        },
+        "loandate": {
+            "description": "When originally loaned",
+            "type": "string",
+            "format": "date"
+        },
+        "renewaldate": {
+            "description": "When last renewed",
+            "type": "string",
+            "format": "date",
+            "default": null
+        },
+        "duedate": {
+            "description": "When book is due",
+            "type": "string",
+            "format": "date"
+        },
+        "renewed": {
+            "description": "How many times book has been renewed",
+            "type": "integer",
+            "default": 0
+        },
+        "status": {
+            "description": "Loan's status",
+            "type": "string",
+            "default": "Charged",
+            "enum": ["Charged", "Renewed", "Late", "Hold requested"]
+        }
+    },
+    "required": ["patron_barcode", "loandate", "duedate"]
+}

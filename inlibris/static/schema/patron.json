@@ -19,7 +19,7 @@
             "description": "Patron's email",
             "type": "string",
             "format": "email",
-            "pattern": "[a-z0-9\._%+!$&*=^|~#%{}\\-]+@([a-z0-9\-]+\.){1,}([a-z]{2,22})$"
+            "pattern": "[a-z0-9\\._%+!$&*=^|~#%{}\\-]+@([a-z0-9\\-]+\\.){1,}([a-z]{2,22})$"
         },
         "group": {
             "description": "Patron's user group (Customer or Staff)",

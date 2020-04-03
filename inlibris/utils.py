@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from inlibris.models import Patron, Book, Hold, Loan
 from inlibris.constants import *
+from . import api
 
 '''
 # Needed this in development, don't need it now
@@ -103,154 +104,32 @@ class LibraryBuilder(MasonBuilder):
     """
 
     @staticmethod
-    def patron_schema():    
-        schema = {
-            "type": "object",
-            "required": ["barcode", "firstname", "email"]
-        }
-        props = schema["properties"] = {}
-        props["barcode"] = {
-            "description": "Patron's unique barcode",
-            "type": "integer",
-            "minimum": 100000,
-            "maximum": 199999
-        }
-        props["firstname"] = {
-            "description": "Patron's first name",
-            "type": "string"
-        }
-        props["lastname"] = {
-            "description": "Patron's last name",
-            "type": "string"
-        }
-        props["email"] = {
-            "description": "Patron's email address",
-            "type": "string",
-            "format": "email",
-            "pattern": "[a-z0-9\._%+!$&*=^|~#%{}\\-]+@([a-z0-9\-]+\.){1,}([a-z]{2,22})$"
-        }
-        props["group"] = {
-            "description": "Patron's user group",
-            "type": "string",
-            "default": "Customer",
-            "enum": ["Customer", "Staff"]
-        }
-        props["status"] = {
-            "description": "Patron's status",
-            "type": "string",
-            "default": "Active",
-            "enum": ["Active", "Suspended", "Expired"]
-        }
+    def patron_schema():
+        print(api.api_bp.static_folder + '/schema/patron.json')
+        with open(api.api_bp.static_folder + '/schema/patron.json', 'r') as f:
+            schema = json.load(f)
 
         return schema
 
     @staticmethod
-    def book_schema():    
-        schema = {
-            "type": "object",
-            "required": ["barcode", "title", "pubyear"]
-        }
-        props = schema["properties"] = {}
-        props["barcode"] = {
-            "description": "Book's unique barcode",
-            "type": "integer",
-            "minimum": 200000,
-            "maximum": 299999
-        }
-        props["title"] = {
-            "description": "Book's title",
-            "type": "string"
-        }
-        props["author"] = {
-            "description": "Book's author",
-            "type": "string"
-        }
-        props["pubyear"] = {
-            "description": "Book's publishing year",
-            "type": "integer"
-        }
-        props["format"] = {
-            "description": "The book's format, e.g. 'CD', 'DVD', 'video game'",
-            "type": "string",
-            "default": "book"
-        }
-        props["description"] = {
-            "description": "Book's description (e.g. ISBN)",
-            "type": "string",
-            "default": ""
-        }
-        props["loantime"] = {
-            "description": "How many days the book can be on loan at a time",
-            "type": "integer",
-            "default": 28
-        }
-        props["renewlimit"] = {
-            "description": "How many times the book can be renewed",
-            "type": "integer",
-            "default": 10
-        }
+    def book_schema():
+        with open(api.api_bp.static_folder + '/schema/book.json', 'r') as f:
+            schema = json.load(f)
+
         return schema
 
     @staticmethod
-    def edit_loan_schema():    
-        schema = {
-            "type": "object",
-            "required": ["patron_barcode", "loandate", "duedate"]
-        }
-        props = schema["properties"] = {}
-        props["patron_barcode"] = {
-            "description": "Patron's unique barcode",
-            "type": "integer",
-            "minimum": 100000,
-            "maximum": 199999
-        }
-        props["loandate"] = {
-            "description": "When originally loaned",
-            "type": "string",
-            "format": "date"
-        }
-        props["renewaldate"] = {
-            "description": "When last renewed",
-            "type": "string",
-            "format": "date",
-            "default": None
-        }
-        props["duedate"] = {
-            "description": "When book is due",
-            "type": "string",
-            "format": "date"
-        }
-        props["renewed"] = {
-            "description": "How many times book has been renewed",
-            "type": "integer",
-            "default": 0
-        }
-        props["status"] = {
-            "description": "Loan's status",
-            "type": "string",
-            "default": "Charged",
-            "enum": ["Charged", "Renewed", "Late", "Hold requested"]
-        }
+    def edit_loan_schema():
+        with open(api.api_bp.static_folder + '/schema/edit_loan.json', 'r') as f:
+            schema = json.load(f)
+
         return schema
 
     @staticmethod
-    def add_loan_schema():    
-        schema = {
-            "type": "object",
-            "required": ["book_barcode"]
-        }
-        props = schema["properties"] = {}
-        props["book_barcode"] = {
-            "description": "Book's unique barcode",
-            "type": "integer",
-            "minimum": 200000,
-            "maximum": 299999
-        }
-        props["duedate"] = {
-            "description": "Loan's duedate",
-            "type": "string",
-            "format": "date"
-        }
+    def add_loan_schema():
+        with open(api.api_bp.static_folder + '/schema/add_loan.json', 'r') as f:
+            schema = json.load(f)
+
         return schema
 
     '''
