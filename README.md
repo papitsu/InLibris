@@ -6,6 +6,8 @@
 
 ## DL4: API implementation
 
+Finished 3.4.2020.
+
 ### Dependencies
 * listed in "requirements.txt"
 
