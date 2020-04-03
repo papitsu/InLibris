@@ -12,7 +12,7 @@
 ### Setting up the environment:
 * Create a virtual environment in Python 3.7 and activate it (e.g. https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 * Clone this repository onto your computer
-* Install dependencies from requirements.txt with command "pip install -r requirements.txt"
+* Install project and dependencies with command "pip install -e inlibris"
 * Set the Flask app variable to "inlibris": In Windows "set FLASK_ENV=inlibris", in Linux "export FLASK_ENV=inlibris"
 * Set the Flask enviromental variable to development: In Windows "set FLASK_ENV=development", in Linux "export FLASK_ENV=development"
 
