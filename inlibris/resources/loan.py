@@ -80,6 +80,15 @@ class LoanItem(Resource):
             )
         print("4")
 
+        
+        #barcode_book = Book.query.filter_by(barcode=request.json["book_barcode"]).first()
+        #if int(barcode_book.id) != int(book_id):
+        #    return create_error_response(409,
+        #        "Invalid book barcode",
+        #        None
+        #    )
+        
+        
         loan = Loan.query.filter_by(book_id=book_id).first()
         if loan is None:
             return Response(status=204)

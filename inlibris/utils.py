@@ -324,7 +324,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_all_patrons(self):
         self.add_control(
             "inlibris:patrons-all",
-            "/api/patrons/",
+            "/inlibris/api/patrons/",
             method="GET",
             title="Get all patrons"
         )
@@ -332,7 +332,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_all_books(self):
         self.add_control(
             "inlibris:books-all",
-            "/api/books/",
+            "/inlibris/api/books/",
             method="GET",
             title="Get all books"
         )
@@ -340,7 +340,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_delete_patron(self, patron_id):
         self.add_control(
             "inlibris:delete",
-            "/api/patrons/%s/" % patron_id,
+            "/inlibris/api/patrons/%s/" % patron_id,
             method="DELETE",
             title="Delete this patron"
         )
@@ -348,7 +348,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_delete_book(self, book_id):
         self.add_control(
             "inlibris:delete",
-            "/api/books/%s/" % book_id,
+            "/inlibris/api/books/%s/" % book_id,
             method="DELETE",
             title="Delete this book"
         )
@@ -356,7 +356,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_delete_loan(self, book_id):
         self.add_control(
             "inlibris:delete",
-            "/api/books/%s/loan/" % book_id,
+            "/inlibris/api/books/%s/loan/" % book_id,
             method="DELETE",
             title="Delete this loan"
         )
@@ -366,7 +366,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_delete_hold(self, patron_id, hold_id):
         self.add_control(
             "inlibris:delete",
-            "/api/patrons/{}/holds/{}/".format(patron_id, hold_id),
+            "/inlibris/api/patrons/{}/holds/{}/".format(patron_id, hold_id),
             method="DELETE",
             title="Delete this hold"
         )
@@ -375,7 +375,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_add_patron(self):
         self.add_control(
             "inlibris:add-patron",
-            "/api/patrons/",
+            "/inlibris/api/patrons/",
             method="POST",
             encoding="json",
             title="Add a patron",
@@ -385,7 +385,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_edit_patron(self, patron_id):
         self.add_control(
             "edit",
-            "/api/patrons/%s/" % patron_id,
+            "/inlibris/api/patrons/%s/" % patron_id,
             title="Edit this patron",
             encoding="json",
             method="PUT",
@@ -395,7 +395,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_add_book(self):
         self.add_control(
             "inlibris:add-book",
-            "/api/books/",
+            "/inlibris/api/books/",
             method="POST",
             encoding="json",
             title="Add a book",
@@ -405,7 +405,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_edit_book(self, book_id):
         self.add_control(
             "edit",
-            "/api/books/%s/" % book_id,
+            "/inlibris/api/books/%s/" % book_id,
             title="Edit this book",
             encoding="json",
             method="PUT",
@@ -415,7 +415,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_loans_by(self, patron_id):
         self.add_control(
             "inlibris:loans-by",
-            "/api/patrons/%s/loans/" % patron_id,
+            "/inlibris/api/patrons/%s/loans/" % patron_id,
             title="Loans by patron",
             method="GET"
         )
@@ -423,7 +423,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_add_loan(self, patron_id):
         self.add_control(
             "inlibris:add-loan",
-            "/api/patrons/%s/loans/" % patron_id,
+            "/inlibris/api/patrons/%s/loans/" % patron_id,
             method="POST",
             encoding="json",
             title="Add a new loan to this patron",
@@ -433,7 +433,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_edit_loan(self, book_id):
         self.add_control(
             "edit",
-            "/api/books/%s/loan/" % book_id,
+            "/inlibris/api/books/%s/loan/" % book_id,
             title="Edit this loan",
             encoding="json",
             method="PUT",
@@ -443,7 +443,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_holds_by(self, patron_id):
         self.add_control(
             "inlibris:holds-by",
-            "/api/patrons/%s/holds/" % patron_id,
+            "/inlibris/api/patrons/%s/holds/" % patron_id,
             title="Holds by patron",
             method="GET"
         )
@@ -451,7 +451,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_loan_of(self, book_id):
         self.add_control(
             "inlibris:loan-of",
-            "/api/books/%s/loan/" % book_id,
+            "/inlibris/api/books/%s/loan/" % book_id,
             title="Loan of book",
             method="GET"
         )
@@ -459,7 +459,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_holds_on(self, book_id):
         self.add_control(
             "inlibris:holds-on",
-            "/api/books/%s/holds/" % book_id,
+            "/inlibris/api/books/%s/holds/" % book_id,
             title="Holds on book",
             method="GET"
         )
@@ -467,7 +467,7 @@ class LibraryBuilder(MasonBuilder):
     def add_control_target_book(self, book_id):
         self.add_control(
             "inlibris:target-book",
-            "/api/books/%s/" % book_id,
+            "/inlibris/api/books/%s/" % book_id,
             title="Target book",
             method="GET"
         )

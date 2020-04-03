@@ -44,7 +44,7 @@ class TestEntryPoint(object):
     This class tests the API entry point.
     """
 
-    RESOURCE_URL = "/api/"
+    RESOURCE_URL = "/inlibris/api/"
 
     def test_get(self, client):
         resp = client.get(self.RESOURCE_URL)
@@ -60,7 +60,7 @@ class TestPatronCollection(object):
     resource. 
     """
 
-    RESOURCE_URL = "/api/patrons/"
+    RESOURCE_URL = "/inlibris/api/patrons/"
 
     def test_get(self, client):
         """
@@ -134,8 +134,8 @@ class TestPatronItem(object):
     resource. 
     """
 
-    RESOURCE_URL = "/api/patrons/1/"
-    INVALID_URL = "/api/patrons/15/"
+    RESOURCE_URL = "/inlibris/api/patrons/1/"
+    INVALID_URL = "/inlibris/api/patrons/15/"
     
     def test_get(self, client):
         """
@@ -216,7 +216,7 @@ class TestBookCollection(object):
     resource. 
     """
     
-    RESOURCE_URL = "/api/books/"
+    RESOURCE_URL = "/inlibris/api/books/"
 
     def test_get(self, client):
         """
@@ -289,8 +289,8 @@ class TestBookItem(object):
     resource. 
     """
 
-    RESOURCE_URL = "/api/books/1/"
-    INVALID_URL = "/api/books/14/"
+    RESOURCE_URL = "/inlibris/api/books/1/"
+    INVALID_URL = "/inlibris/api/books/14/"
 
     def test_get(self, client):
         """
@@ -369,9 +369,9 @@ class TestLoanItem(object):
     resource. 
     """
 
-    RESOURCE_URL = "/api/books/1/loan/"
-    NOT_LOANED_URL = "/api/books/3/loan/"
-    NO_BOOK_URL = "/api/books/14/loan/"
+    RESOURCE_URL = "/inlibris/api/books/1/loan/"
+    NOT_LOANED_URL = "/inlibris/api/books/3/loan/"
+    NO_BOOK_URL = "/inlibris/api/books/14/loan/"
 
     def test_get(self, client):
         """
@@ -479,8 +479,8 @@ class TestLoansByPatron(object):
     resource. 
     """
 
-    RESOURCE_URL = "/api/patrons/2/loans/"
-    NO_PATRON_URL = "/api/patrons/13/loans/"
+    RESOURCE_URL = "/inlibris/api/patrons/2/loans/"
+    NO_PATRON_URL = "/inlibris/api/patrons/13/loans/"
 
     def test_get(self, client):
         """
@@ -530,7 +530,7 @@ class TestLoansByPatron(object):
         # test with valid and see that it exists afterward
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 201
-        assert resp.headers["Location"].endswith("/api/books/3/loan/")
+        assert resp.headers["Location"].endswith("/inlibris/api/books/3/loan/")
         resp = client.get(resp.headers["Location"])
         assert resp.status_code == 200
         body = json.loads(resp.data)
@@ -545,14 +545,14 @@ class TestLoansByPatron(object):
         assert resp.status_code == 409
 
         # delete previous
-        resp = client.delete("/api/books/3/loan/")
+        resp = client.delete("/inlibris/api/books/3/loan/")
         assert resp.status_code == 204
 
         # send with custom duedate
         valid["duedate"] = "2020-08-08"
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 201
-        assert resp.headers["Location"].endswith("/api/books/3/loan/")
+        assert resp.headers["Location"].endswith("/inlibris/api/books/3/loan/")
         resp = client.get(resp.headers["Location"])
         assert resp.status_code == 200
         body = json.loads(resp.data)

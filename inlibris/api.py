@@ -5,7 +5,7 @@ from inlibris.constants import *
 from inlibris.utils import LibraryBuilder
 
 root_bp = Blueprint("root", __name__, url_prefix="")
-api_bp = Blueprint("api", __name__, url_prefix="/api")
+api_bp = Blueprint("api", __name__, url_prefix="/inlibris/api")
 api = Api(api_bp)
 
 from inlibris.resources.patron import PatronItem, PatronCollection
