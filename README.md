@@ -4,15 +4,7 @@
 ### Panu Mölsä solo project
 <br/>
 
-DL4: API implementation
-
-File	Description
-app.py	The main file, consisting of all the model and relationship definitions as well as some non-required API functions created only for personal testing and learning, will be probably scrapped when starting to actually the API
-test.db	A populated database for testing
-populate_db.py	A script for creating a populated database test.db
-test_db.py	A pytest script for testing the database
-requirements.txt	External Python libraries required to run the database
-
+## DL4: API implementation
 
 ### Dependencies
 * listed in "requirements.txt"
