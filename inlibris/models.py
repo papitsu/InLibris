@@ -7,6 +7,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask.cli import with_appcontext
 from inlibris import db
 
+'''
+CLI commands are defined here. They are added to the App in the __init__.py file.
+'''
+
 @click.command("init-db")
 @with_appcontext
 def init_db_command():
@@ -32,6 +36,10 @@ def clear_db_command():
     db.drop_all()
     db.create_all()
     click.echo('Cleared the database.')
+
+'''
+All database models are defined here.
+'''
 
 class Patron(db.Model):
     id = db.Column(db.Integer, unique=True, nullable=False, primary_key=True)

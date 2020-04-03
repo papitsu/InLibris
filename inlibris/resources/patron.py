@@ -10,7 +10,19 @@ from inlibris.constants import *
 from inlibris import db
 
 class PatronItem(Resource):
+    '''
+    HTTP method implementations for the PatronItem resource. Supports GET, PUT and DELETE.
+    '''
     def get(self, patron_id):
+        '''
+        Gets the information for a single patron.
+
+        Input: patron_id
+        Output HTTP responses:
+            200 OK (when patron_id is valid)
+            404 Not Found (when patron_id is invalid)
+        '''
+
         patron = Patron.query.filter_by(id=patron_id).first()
         if patron is None:
             return create_error_response(404, "Not found", 
@@ -40,6 +52,17 @@ class PatronItem(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def put(self, patron_id):
+        '''
+        Edit a patron.
+
+        Input: patron_id in URI and a JSON document as HTTP request body.
+        Output HTTP responses:
+            204 (when patron information was updated succesfully)
+            400 (when JSON document didn't validate against the schema)
+            404 (when patron_id is invalid)
+            409 (when trying to change the barcode to one that is already reserved)
+            415 (when HTTP request body is not JSON)
+        '''
         if not request.json:
             return create_error_response(415,
                 "Unsupported media type",
@@ -82,6 +105,15 @@ class PatronItem(Resource):
         return Response(status=204) 
 
     def delete(self, patron_id):
+        '''
+        Delete a patron from the database
+
+        Input: patron_id
+        Output HTTP responses:
+            204 (when patron was deleted succesfully)
+            404 (when patron_id is invalid)
+        '''
+
         if not Patron.query.filter_by(id=patron_id).all():
             return create_error_response(404,
                 "Patron not found",
@@ -95,7 +127,19 @@ class PatronItem(Resource):
         return Response(status=204)
 
 class PatronCollection(Resource):
+    '''
+    HTTP method implementations for the PatronCollection resource. Supports GET and POST.
+    '''
+
     def get(self):
+        '''
+        Gets the info for all the patrons in the database.
+
+        Input: None
+        Output HTTP responses:
+            200
+        '''
+        
         body = LibraryBuilder(items=[])
         patrons = Patron.query.all()
         print(len(patrons))
@@ -124,6 +168,16 @@ class PatronCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def post(self):
+        '''
+        Add a new patron in the database.
+
+        Input: JSON document as HTTP request body.
+        Output HTTP responses:
+            201 (when patron was added succesfully)
+            400 (when JSON document didn't validate against the schema)
+            409 (when the barcode or email is already reserved)
+            415 (when HTTP request body is not JSON)
+        '''
 
         if not request.json:
             return create_error_response(415,

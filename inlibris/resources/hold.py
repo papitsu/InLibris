@@ -9,11 +9,22 @@ from inlibris.utils import LibraryBuilder, create_error_response, date_converter
 from inlibris.constants import *
 from inlibris import db
 
+'''
+THESE RESOURCES ARE STILL UNIMPLEMENTED.
+'''
+
 class HoldItem(Resource):
-    pass
-#    def get(self, patron_id, hold_id):
-#        return Response("Placeholder get hold item", status=200, mimetype=MASON)
     '''
+    HTTP method implementations for the HoldItem resource. Supports GET, PUT and DELETE.
+
+    So far unimplemented.
+    '''
+    pass
+
+    '''
+    def get(self, patron_id, hold_id):
+        return Response("Placeholder get hold item", status=200, mimetype=MASON)
+
     def put(self, patron_id, hold_id):
                 if not request.json:
                     return create_error_response(415,
@@ -24,18 +35,31 @@ class HoldItem(Resource):
 
 
     def delete(self, patron_id, hold_id):
-        return Response("Placeholder put hold item", status=204, mimetype=MASON)
+        return Response("Placeholder delete hold item", status=204, mimetype=MASON)
     '''
+
 class HoldsOnBook(Resource):
+    '''
+    HTTP method implementations for the HoldsOnBook resource. Supports GET.
+
+    So far unimplemented.
+    '''
+
     def get(self, book_id):
         return Response("Placeholder HoldsOnBook", status=200, mimetype=MASON)
 
-
 class HoldsByPatron(Resource):
-    pass
-    #def get(self, patron_id):
-    #    return Response("Placeholder Get HoldsByPatron", status=200, mimetype=MASON)
     '''
+    HTTP method implementations for the HoldsByPatron resource. Supports GET and POST.
+
+    So far unimplemented.
+    '''
+    pass
+
+    '''
+    def get(self, patron_id):
+        return Response("Placeholder Get HoldsByPatron", status=200, mimetype=MASON)
+
     def post(self, patron_id):
 
                 if not request.json:

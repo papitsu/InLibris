@@ -9,7 +9,17 @@ from flask_sqlalchemy import SQLAlchemy
 from inlibris.models import Patron, Book, Hold, Loan
 from inlibris.constants import *
 
+'''
+This is a collection of random utility functions and classes for the testing suite.
+'''
+
 def _populate_db(db):
+    '''
+    Helper function to populate the database for testing and demonstration. Creates two patrons, three books, two loans and two holds.
+
+    Also called in models.py so don't go deleting too quickly.
+    '''
+
     patron1 = Patron(
         barcode=100001,
         firstname="Hilma",
@@ -309,6 +319,9 @@ Helper functions for database testing.
 '''
 
 def _get_patron(barcode=123456, email="test@test.com", firstname="Testi"):
+    """
+    Create a valid Patron object.
+    """
     return Patron(
         barcode=barcode,
         firstname=firstname,
@@ -317,6 +330,9 @@ def _get_patron(barcode=123456, email="test@test.com", firstname="Testi"):
     )
 
 def _get_book(barcode=234567, pubyear=2020):
+    """
+    Create a valid Book object.
+    """
     return Book(
         barcode=barcode,
         title="Testikirja",
@@ -324,12 +340,18 @@ def _get_book(barcode=234567, pubyear=2020):
     )
 
 def _get_loan():
+    """
+    Create a valid Loan object.
+    """
     return Loan(
         loandate=datetime.now().date(),
         duedate=(datetime.now() + timedelta(days=28)).date()
     )
 
 def _get_hold():
+    """
+    Create a valid hold object.
+    """
     return Hold(
         holddate=datetime.now().date(),
         expirationdate=(datetime.now() + timedelta(days=100)).date()

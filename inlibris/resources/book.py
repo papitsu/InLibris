@@ -10,7 +10,19 @@ from inlibris.constants import *
 from inlibris import db
 
 class BookItem(Resource):
+    '''
+    HTTP method implementations for the BookItem resource. Supports GET, PUT and DELETE.
+    '''
+
     def get(self, book_id):
+        '''
+        Gets the information for a single book.
+
+        Input: book_id
+        Output HTTP responses:
+            200 OK (when book_id is valid)
+            404 Not Found (when book_id is invalid)
+        '''
         book = Book.query.filter_by(id=book_id).first()
         if book is None:
             return create_error_response(404, "Not found", 
@@ -41,6 +53,17 @@ class BookItem(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def put(self, book_id):
+        '''
+        Edit a book.
+
+        Input: book_id in URI and a JSON document as HTTP request body.
+        Output HTTP responses:
+            204 (when book information was updated succesfully)
+            400 (when JSON document didn't validate against the schema)
+            404 (when book_id is invalid)
+            409 (when trying to change the barcode to one that is already reserved)
+            415 (when HTTP request body is not JSON)
+        '''
         if not request.json:
             return create_error_response(415,
                 "Unsupported media type",
@@ -81,6 +104,14 @@ class BookItem(Resource):
         return Response(status=204)
 
     def delete(self, book_id):
+        '''
+        Delete a book from the database
+
+        Input: book_id
+        Output HTTP responses:
+            204 (when book was deleted succesfully)
+            404 (when book_id is invalid)
+        '''
         if not Book.query.filter_by(id=book_id).all():
             return create_error_response(404,
                 "Book not found",
@@ -94,7 +125,18 @@ class BookItem(Resource):
         return Response(status=204)
 
 class BookCollection(Resource):
+    '''
+    HTTP method implementations for the BookCollection resource. Supports GET and POST.
+    '''
+
     def get(self):
+        '''
+        Gets the info for all books in the database.
+
+        Input: None
+        Output HTTP responses:
+            200
+        '''
         body = LibraryBuilder(items=[])
         books = Book.query.all()
         print(len(books))
@@ -125,7 +167,17 @@ class BookCollection(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def post(self):
+        '''
+        Add a new book in the database.
 
+        Input: JSON document as HTTP request body.
+        Output HTTP responses:
+            201 (when book was added succesfully)
+            400 (when JSON document didn't validate against the schema)
+            409 (when the barcode is already reserved)
+            415 (when HTTP request body is not JSON)
+        '''
+        
         if not request.json:
             return create_error_response(415,
                 "Unsupported media type",

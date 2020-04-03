@@ -10,8 +10,21 @@ from inlibris.constants import *
 from inlibris import db
 
 class LoanItem(Resource):
+    '''
+    HTTP method implementations for the LoanItem resource. Supports GET, PUT and DELETE.
+    '''
 
     def get(self, book_id):
+        '''
+        Gets the information for a single loan.
+
+        Input: book_id
+        Output HTTP responses:
+            200 (when book_id is valid)
+            204 (when book_id is valid but book is not loaned)
+            404 (when book_id is invalid)
+        '''
+
         book = Book.query.filter_by(id=book_id).first()
         if book is None:
             return create_error_response(404,
@@ -51,17 +64,28 @@ class LoanItem(Resource):
         return Response(json.dumps(body), 200, mimetype=MASON)
 
     def put(self, book_id):
+        '''
+        Edit a loan (e.g. renew)
+
+        Input: book_id in URI and a JSON document as HTTP request body.
+        Output HTTP responses:
+            200 (when loan information was updated succesfully)
+            204 (when book_id is valid but book is not on loan)
+            400 (when JSON document didn't validate against the schema)
+            404 (when book_id is invalid or patron barcode in request body is invalid)
+            415 (when HTTP request body is not JSON)
+        '''
+
         if not request.json:
             return create_error_response(415,
                 "Unsupported media type",
                 "Requests must be JSON"
             )
-        print("1")
+
         try:
             validate(request.json, LibraryBuilder.edit_loan_schema())
         except ValidationError as e:
             return create_error_response(400, "Invalid JSON document", str(e))
-        print("2")
 
         book = Book.query.filter_by(id=book_id).first()
         patron = Patron.query.filter_by(barcode=request.json["patron_barcode"]).first()
@@ -71,53 +95,37 @@ class LoanItem(Resource):
                 "Patron not found", 
                 None
             )
-        print("3")
 
         if book is None:
             return create_error_response(404,
                 "Book not found", 
                 None
             )
-        print("4")
-
-        
-        #barcode_book = Book.query.filter_by(barcode=request.json["book_barcode"]).first()
-        #if int(barcode_book.id) != int(book_id):
-        #    return create_error_response(409,
-        #        "Invalid book barcode",
-        #        None
-        #    )
-        
-        
+                
         loan = Loan.query.filter_by(book_id=book_id).first()
         if loan is None:
             return Response(status=204)
 
         # TODO: Check more errors: what if they try to change book_id to a book that is already
         # on loan or something like that?
-        print("5")
 
         db.session.delete(loan)
         db.session.commit()
-        print("6")
 
         if "renewaldate" in request.json:
             renewaldate = date_converter(request.json["renewaldate"])
         else:
             renewaldate = None
-        print("7")
 
         if "renewed" in request.json:
             renewed = request.json["renewed"]
         else:
             renewed = 0           
-        print("8")
 
         if "status" in request.json:
             status = request.json["status"]
         else:
             status = "Charged"
-        print("9")
 
         loan = Loan(
             patron_id = patron.id,
@@ -128,15 +136,22 @@ class LoanItem(Resource):
             renewed = renewed,
             status = status
         )
-        print("10")
 
         db.session.add(loan)
         db.session.commit()
-        print("11")
 
         return Response(status=200)
 
     def delete(self, book_id):
+        '''
+        Delete a loan from the database
+
+        Input: book_id
+        Output HTTP responses:
+            204 (when loan was deleted succesfully or the book is not loaned)
+            404 (when book_id is invalid)
+        '''
+
         book = Book.query.filter_by(id=book_id).first()
         if book is None:
             return create_error_response(404,
@@ -155,7 +170,19 @@ class LoanItem(Resource):
         return Response(status=204)
 
 class LoansByPatron(Resource):
+    '''
+    HTTP method implementations for the LoansByPatron resource. Supports GET and POST.
+    '''
+
     def get(self, patron_id):
+        '''
+        Get the info for all the loans by a patron.
+
+        Input: patron_id
+        Output HTTP responses:
+            200 (patron_id is valid)
+            404 (patron_id is invalid)
+        '''
 
         patron = Patron.query.filter_by(id=patron_id).first()
 
@@ -199,6 +226,17 @@ class LoansByPatron(Resource):
 
 
     def post(self, patron_id):
+        '''
+        Add a loan by a patron.
+
+        Input: patron_id in URI and JSON document as HTTP request body.
+        Output HTTP responses:
+            201 (when loan was added succesfully)
+            400 (when JSON document didn't validate against the schema)
+            404 (when the patron_id is invalid or book_barcode in the request body is invalid)
+            409 (when the book is already loaned)
+            415 (when HTTP request body is not JSON)
+        '''
 
         if not request.json:
             return create_error_response(415,

@@ -10,6 +10,12 @@ from inlibris.constants import *
 from . import api
 
 '''
+This is a collection of random utility functions and classes for the API.
+'''
+
+
+
+'''
 # Needed this in development, don't need it now
 # Still keeping it here in case I need it again
 
@@ -100,7 +106,8 @@ class MasonBuilder(dict):
 class LibraryBuilder(MasonBuilder):
     """
     An application specific subclass for MasonBuilder to manage adding
-    hypermedia controls to json documents.
+    hypermedia controls to json documents. Loads and reads all the schemas
+    from the static schema folder.
     """
 
     @staticmethod
@@ -108,28 +115,24 @@ class LibraryBuilder(MasonBuilder):
         print(api.api_bp.static_folder + '/schema/patron.json')
         with open(api.api_bp.static_folder + '/schema/patron.json', 'r') as f:
             schema = json.load(f)
-
         return schema
 
     @staticmethod
     def book_schema():
         with open(api.api_bp.static_folder + '/schema/book.json', 'r') as f:
             schema = json.load(f)
-
         return schema
 
     @staticmethod
     def edit_loan_schema():
         with open(api.api_bp.static_folder + '/schema/edit_loan.json', 'r') as f:
             schema = json.load(f)
-
         return schema
 
     @staticmethod
     def add_loan_schema():
         with open(api.api_bp.static_folder + '/schema/add_loan.json', 'r') as f:
             schema = json.load(f)
-
         return schema
 
     '''
