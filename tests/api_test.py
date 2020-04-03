@@ -434,6 +434,7 @@ class TestLoanItem(object):
 
         # test book which not loaned
         resp = client.put(self.NOT_LOANED_URL, json=valid)
+        print(resp.json)
         assert resp.status_code == 204
 
         # remove field for 400
