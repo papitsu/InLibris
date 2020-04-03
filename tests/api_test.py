@@ -431,11 +431,6 @@ class TestLoanItem(object):
         valid["patron_barcode"] = 100001
         resp = client.put(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 200
-        
-        # reset previous
-        valid["patron_barcode"] = 100002
-        resp = client.put(self.RESOURCE_URL, json=valid)
-        assert resp.status_code == 200
 
         # test book which not loaned
         resp = client.put(self.NOT_LOANED_URL, json=valid)

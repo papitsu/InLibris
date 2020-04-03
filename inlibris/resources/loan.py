@@ -56,11 +56,12 @@ class LoanItem(Resource):
                 "Unsupported media type",
                 "Requests must be JSON"
             )
-
+        print("1")
         try:
             validate(request.json, LibraryBuilder.edit_loan_schema())
         except ValidationError as e:
             return create_error_response(400, "Invalid JSON document", str(e))
+        print("2")
 
         book = Book.query.filter_by(id=book_id).first()
         patron = Patron.query.filter_by(barcode=request.json["patron_barcode"]).first()
@@ -70,13 +71,15 @@ class LoanItem(Resource):
                 "Patron not found", 
                 None
             )
+        print("3")
 
         if book is None:
             return create_error_response(404,
                 "Book not found", 
                 None
             )
-            
+        print("4")
+
         '''
         barcode_book = Book.query.filter_by(barcode=request.json["book_barcode"]).first()
         if int(barcode_book.id) != int(book_id):
@@ -92,24 +95,29 @@ class LoanItem(Resource):
 
         # TODO: Check more errors: what if they try to change book_id to a book that is already
         # on loan or something like that?
+        print("5")
 
         db.session.delete(loan)
         db.session.commit()
+        print("6")
 
         if "renewaldate" in request.json:
             renewaldate = date_converter(request.json["renewaldate"])
         else:
             renewaldate = None
+        print("7")
 
         if "renewed" in request.json:
             renewed = request.json["renewed"]
         else:
             renewed = 0           
+        print("8")
 
         if "status" in request.json:
             status = request.json["status"]
         else:
             status = "Charged"
+        print("9")
 
         loan = Loan(
             patron_id = patron.id,
@@ -120,9 +128,11 @@ class LoanItem(Resource):
             renewed = renewed,
             status = status
         )
+        print("10")
 
         db.session.add(loan)
         db.session.commit()
+        print("11")
 
         return Response(status=200)
 
