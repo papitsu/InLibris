@@ -82,13 +82,9 @@ function renderPatrons(body) {
     current_patron_object = null;
 
     var items = body.items;
-    console.log(items);
-
     items.sort(function(a, b) {
-        return (a.barcode > b.barcode);
-    })
-
-    console.log(items);
+        return (a.barcode - b.barcode);
+    });
 
     $("div.navigation").html(
         "<a href='" +
@@ -335,7 +331,7 @@ function renderLoanPatronLink(item) {
     return "<td>" + link + "</td>";
 }
 
-function filterFunction() {
+function filterPatronsFunction() {
     /*
     Modified from https://www.w3schools.com/howto/howto_js_filter_lists.asp
     */
@@ -391,33 +387,8 @@ function renderLoanOfError(xhr, ajaxOptions, thrownError) {
         }
 
         $(".secondresulttable thead").html(
-            "Create a loan for: <input type='text' id='patronSearch' onkeyup='filterFunction()' placeholder='Enter patron barcode...'>"
+            "Create a loan for: <input type='text' id='patronSearch' onkeyup='filterPatronsFunction()' placeholder='Enter patron barcode...'>"
         );
-
-        /*
-        $(".secondresulttable thead").html(
-            "Not loaned<br><br>"
-        );
-        $(".secondresulttable tbody").empty();
-        $(".secondresulttable tbody").append(
-            "<tr><th>Loan for patron:</th></tr>" +
-            "<tr><th></th></tr>"
-        );
-        $.ajax({
-            url: current_book_object["@controls"].collection.href,
-            success: function(data) {
-                $.ajax({
-                    url: data["@controls"]["inlibris:patrons-all"].href,
-                    book_barcode: current_book_object.barcode,
-                    success: function(data) {
-                        renderLoanPatronLinks(data);
-                    },
-                    error: renderError
-                });
-            },
-            error: renderError
-        });
-        */
     }
 }
 
@@ -480,6 +451,11 @@ function renderBooks(body) {
     current_book_object = null;
     current_patron_object = null;
 
+    var items = body.items;
+    items.sort(function(a, b) {
+        return (a.barcode - b.barcode);
+    });
+
     $("div.navigation").html(
         "<a href='" +
         body["@controls"]["inlibris:patrons-all"].href +
@@ -496,7 +472,7 @@ function renderBooks(body) {
     );   
     let tbody = $(".firstresulttable tbody");
     tbody.empty();
-    body.items.forEach(function (item) {
+    items.forEach(function (item) {
         tbody.append(bookRow(item));
     });
     $("div.form").empty();
