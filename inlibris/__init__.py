@@ -35,4 +35,8 @@ def create_app(test_config=None):
     app.register_blueprint(api.api_bp)
     app.register_blueprint(api.root_bp)
 
+    @app.route("/inlibris/librarian/")
+    def admin_site():
+        return app.send_static_file("html/librarian.html")
+
     return app

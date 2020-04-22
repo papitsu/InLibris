@@ -84,7 +84,7 @@ class TestPatronCollection(object):
         utils._check_control_get_method("profile", client, body)
         utils._check_control_get_method("inlibris:books-all", client, body)
         utils._check_control_post_patron_method("inlibris:add-patron", client, body)
-        assert len(body["items"]) == 2
+        assert len(body["items"]) == 11
         for item in body["items"]:
             utils._check_control_get_method("self", client, item)
             utils._check_control_get_method("profile", client, item)
@@ -112,7 +112,7 @@ class TestPatronCollection(object):
         # test with valid and see that it exists afterward
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 201
-        assert resp.headers["Location"].endswith(self.RESOURCE_URL + "3" + "/")
+        assert resp.headers["Location"].endswith(self.RESOURCE_URL + "12" + "/")
         resp = client.get(resp.headers["Location"])
         assert resp.status_code == 200
         body = json.loads(resp.data)
@@ -240,7 +240,7 @@ class TestBookCollection(object):
         utils._check_control_get_method("profile", client, body)
         utils._check_control_get_method("inlibris:patrons-all", client, body)
         utils._check_control_post_book_method("inlibris:add-book", client, body)
-        assert len(body["items"]) == 3
+        assert len(body["items"]) == 7
         for item in body["items"]:
             utils._check_control_get_method("self", client, item)
             utils._check_control_get_method("profile", client, item)
@@ -271,7 +271,7 @@ class TestBookCollection(object):
         # test with valid and see that it exists afterward
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 201
-        assert resp.headers["Location"].endswith(self.RESOURCE_URL + "4" + "/")
+        assert resp.headers["Location"].endswith(self.RESOURCE_URL + "8" + "/")
         resp = client.get(resp.headers["Location"])
         assert resp.status_code == 200
         body = json.loads(resp.data)
@@ -376,7 +376,7 @@ class TestLoanItem(object):
     """
 
     RESOURCE_URL = "/inlibris/api/books/1/loan/"
-    NOT_LOANED_URL = "/inlibris/api/books/3/loan/"
+    NOT_LOANED_URL = "/inlibris/api/books/6/loan/"
     NO_BOOK_URL = "/inlibris/api/books/14/loan/"
 
     def test_get(self, client):
@@ -392,9 +392,9 @@ class TestLoanItem(object):
         assert body["id"] == 1
         assert body["book_barcode"] == 200001
         assert body["patron_barcode"] == 100002
-        assert body["loandate"] == "2020-04-02"
+        assert body["loandate"] == "2020-04-20"
         assert body["renewaldate"] == None
-        assert body["duedate"] == "2020-04-30"
+        assert body["duedate"] == "2020-05-18"
         assert body["renewed"] == 0
         assert body["status"] == "Charged"
         utils._check_namespace(client, body)
@@ -410,7 +410,7 @@ class TestLoanItem(object):
         resp = client.get(self.NO_BOOK_URL)
         assert resp.status_code == 404
         resp = client.get(self.NOT_LOANED_URL)
-        assert resp.status_code == 204
+        assert resp.status_code == 400
 
     def test_put(self, client):
         """
@@ -536,11 +536,11 @@ class TestLoansByPatron(object):
         # test with valid and see that it exists afterward
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 201
-        assert resp.headers["Location"].endswith("/inlibris/api/books/3/loan/")
+        assert resp.headers["Location"].endswith("/inlibris/api/books/7/loan/")
         resp = client.get(resp.headers["Location"])
         assert resp.status_code == 200
         body = json.loads(resp.data)
-        assert body["book_barcode"] == 200002
+        assert body["book_barcode"] == 200007
         assert body["patron_barcode"] == 100002
         assert body["loandate"] == str(datetime.now().date())
         assert body["renewed"] == 0
@@ -551,18 +551,18 @@ class TestLoansByPatron(object):
         assert resp.status_code == 409
 
         # delete previous
-        resp = client.delete("/inlibris/api/books/3/loan/")
+        resp = client.delete("/inlibris/api/books/7/loan/")
         assert resp.status_code == 204
 
         # send with custom duedate
         valid["duedate"] = "2020-08-08"
         resp = client.post(self.RESOURCE_URL, json=valid)
         assert resp.status_code == 201
-        assert resp.headers["Location"].endswith("/inlibris/api/books/3/loan/")
+        assert resp.headers["Location"].endswith("/inlibris/api/books/7/loan/")
         resp = client.get(resp.headers["Location"])
         assert resp.status_code == 200
         body = json.loads(resp.data)
-        assert body["book_barcode"] == 200002
+        assert body["book_barcode"] == 200007
         assert body["patron_barcode"] == 100002
         assert body["loandate"] == str(datetime.now().date())
         assert body["renewed"] == 0

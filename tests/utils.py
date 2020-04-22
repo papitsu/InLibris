@@ -38,6 +38,78 @@ def _populate_db(db):
         regdate=datetime(1999,12,31)
     )
 
+    patron3 = Patron(
+        barcode=100003,
+        firstname="Sally",
+        lastname="Stover",
+        email="sally@test.com",
+        regdate=datetime(1991,7,1)
+    )
+
+    patron4 = Patron(
+        barcode=100004,
+        firstname="Shelby",
+        lastname="Sunstar",
+        email="shelby@test.com",
+        regdate=datetime(1990,12,1)
+    )
+
+    patron5 = Patron(
+        barcode=100005,
+        firstname="Sydney",
+        lastname="Springer",
+        email="sydney@test.com",
+        regdate=datetime(1979,10,11)
+    )
+
+    patron6 = Patron(
+        barcode=100006,
+        firstname="Shirley",
+        lastname="Starr",
+        email="shirley@test.com",
+        regdate=datetime(1993,3,3)
+    )
+
+    patron7 = Patron(
+        barcode=100027,
+        firstname="Sadie",
+        lastname="Seymour",
+        email="sadie@test.com",
+        regdate=datetime(1992,11,11)
+    )
+
+    patron8 = Patron(
+        barcode=105312,
+        firstname="Stacey",
+        lastname="Stringer",
+        email="stacey@test.com",
+        regdate=datetime(2002,4,19)
+    )
+
+    patron9 = Patron(
+        barcode=101127,
+        firstname="Sarah",
+        lastname="Slaughter",
+        email="sarah@test.com",
+        regdate=datetime(2000,1,1)
+    )
+
+    patron10 = Patron(
+        barcode=102112,
+        firstname="Stacy",
+        lastname="Snyder",
+        email="stacy@test.com",
+        regdate=datetime(1999,12,31)
+    )
+
+    patron11 = Patron(
+        barcode=100011,
+        firstname="Samantha",
+        lastname="Stocker",
+        email="samantha@test.com",
+        regdate=datetime(2007,6,1)
+    )
+
     item1 = Book(
         barcode=200001,
         title="Garpin maailma",
@@ -65,16 +137,66 @@ def _populate_db(db):
         description="ISBN 978-951-31-6307-8"
     )
 
+    item4 = Book(
+        barcode=200004,
+        title="Kaikki isäni hotellit",
+        author="Irving, John",
+        pubyear=1982,
+        format="book",
+        description="ISBN 951-30-5443-8"
+    )
+
+    item5 = Book(
+        barcode=200005,
+        title="Vapauttakaa karhut",
+        author="Irving, John",
+        pubyear=2012,
+        format="book",
+        description="ISBN 978-951-31-6650-2"
+    )
+
+    item6 = Book(
+        barcode=200006,
+        title="Viimeinen yö Twisted Riverillä",
+        author="Irving, John",
+        pubyear=2010,
+        format="book",
+        description="ISBN 978-951-31-5293-2"
+    )
+
+    item7 = Book(
+        barcode=200007,
+        title="Ystäväni Owen Meany",
+        author="Irving, John",
+        pubyear=1990,
+        format="book",
+        description="ISBN 951-30-8982-7"
+    )
+
     loan1 = Loan(
         book=item1,
         patron=patron2,
-        loandate=datetime(2020,4,2).date(),
-        duedate=(datetime(2020,4,2) + timedelta(days=28)).date()
+        loandate=datetime(2020,4,20).date(),
+        duedate=(datetime(2020,4,20) + timedelta(days=28)).date()
     )
 
     loan2 = Loan(
         book=item3,
         patron=patron2,
+        loandate=datetime(2020,4,17).date(),
+        duedate=(datetime(2020,4,17) + timedelta(days=28)).date()
+    )
+
+    loan3 = Loan(
+        book=item5,
+        patron=patron4,
+        loandate=datetime(2020,4,11).date(),
+        duedate=(datetime(2020,4,11) + timedelta(days=28)).date()
+    )
+
+    loan4 = Loan(
+        book=item6,
+        patron=patron5,
         loandate=datetime(2020,4,2).date(),
         duedate=(datetime(2020,4,2) + timedelta(days=28)).date()
     )
@@ -95,11 +217,26 @@ def _populate_db(db):
 
     db.session.add(patron1)
     db.session.add(patron2)
+    db.session.add(patron3)
+    db.session.add(patron4)
+    db.session.add(patron5)
+    db.session.add(patron6)
+    db.session.add(patron7)
+    db.session.add(patron8)
+    db.session.add(patron9)
+    db.session.add(patron10)
+    db.session.add(patron11)
     db.session.add(item1)
     db.session.add(item2)
     db.session.add(item3)
+    db.session.add(item4)
+    db.session.add(item5)
+    db.session.add(item6)
+    db.session.add(item7)
     db.session.add(loan1)
     db.session.add(loan2)
+    db.session.add(loan3)
+    db.session.add(loan4)
     db.session.add(hold1)
     db.session.add(hold2)
     db.session.commit()
@@ -122,7 +259,7 @@ def _get_book_json(barcode=234567, pubyear=2020):
     
     return {"barcode": barcode, "title": "Testikirja", "pubyear": pubyear}
 
-def _get_add_loan_json(book_barcode=200002):
+def _get_add_loan_json(book_barcode=200007):
     """
     Creates a valid loan JSON object to be used for POST tests.
     """

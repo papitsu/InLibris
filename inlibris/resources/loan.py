@@ -21,7 +21,7 @@ class LoanItem(Resource):
         Input: book_id
         Output HTTP responses:
             200 (when book_id is valid)
-            204 (when book_id is valid but book is not loaned)
+            400 (when book_id is valid but book is not loaned)
             404 (when book_id is invalid)
         '''
 
@@ -34,7 +34,7 @@ class LoanItem(Resource):
 
         loan = Loan.query.filter_by(book_id=book_id).first()
         if loan is None:
-            return Response(status=204)
+            return create_error_response(400, "Book not loaned", None)
 
         book_barcode = Book.query.filter_by(id=book_id).first().barcode
         patron_barcode = Patron.query.filter_by(id=loan.patron_id).first().barcode
