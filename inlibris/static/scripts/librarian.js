@@ -44,7 +44,6 @@ function followLink(event, a, renderer) {
 
 function emptySecondTable() {
     $("div.secondtabletitle").empty();
-    $("div.secondtablecontrols").empty();
     $(".secondresulttable thead").empty();
     $(".secondresulttable tbody").empty();
 }
@@ -59,7 +58,6 @@ function renderEntrypoint(body) {
         body["@controls"]["inlibris:books-all"].href +
         "' onClick='followLink(event, this, renderBooks)'>Books</a>"
     );
-    $("div.firsttablecontrols").empty();
     $(".firstresulttable thead").empty();
     $(".firstresulttable tbody").empty();
     $("div.form").empty();
@@ -95,7 +93,6 @@ function renderPatrons(body) {
         body["@controls"]["inlibris:books-all"].href +
         "' onClick='followLink(event, this, renderBooks)'>Books</a>"
     );
-    $("div.firsttablecontrols").empty();
     $(".firsttabletitle").html("<h3>Patrons</h3>");
     $(".firstresulttable thead").html(
         "<tr><th>Barcode</th><th>First name</th><th>Last name</th><th>Actions</th></tr>"
@@ -170,7 +167,7 @@ function appendLoanRow(body) {
                 "</td><td>" + body.loandate +
                 "</td><td>" + body.duedate +
                 "</td><td>" + status +
-                "</td><td>" + renewLink + "<br>" + returnLink + "</td></tr>"
+                "</td><td>" + renewLink + "  |  " + returnLink + "</td></tr>"
             );
         },
         error: renderError
@@ -466,7 +463,6 @@ function renderBooks(body) {
         "' onClick='followLink(event, this, renderBooks)'>Books</a>"
     );
     $(".firsttabletitle").html("<h3>Books</h3>");
-    $("div.firstfirsttablecontrols").empty();
     $(".firstresulttable thead").html(
         "<tr><th>Barcode</th><th>Author</th><th>Title</th><th>Actions</th></tr>"
     );   
@@ -480,5 +476,9 @@ function renderBooks(body) {
 }
 
 $(document).ready(function () {
+    $("div.header").html(
+        "<h1>Librarian Master UI</h1>"
+    )
+
     getResource("http://localhost:5000/inlibris/api/", renderEntrypoint);
 });
