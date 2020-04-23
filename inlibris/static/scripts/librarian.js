@@ -3,21 +3,28 @@
 const DEBUG = true;
 const MASONJSON = "application/vnd.mason+json";
 const PLAINJSON = "application/json";
+const ENTRYPOINT = "http://localhost:5000/inlibris/api/";
 
 var current_book_object = null;
 var current_patron_object = null;
 var all_patrons = null;
 
+/*
+
+The functions renderError, getResource, sendData and followLink have been taken from the course material
+(https://lovelace.oulu.fi/ohjelmoitava-web/programmable-web-project-spring-2020/exercise-4-implementing-hypermedia-clients/)
+as-is. The rest of the functions as well as the structure of the document have been influenced by the course material.
+
+*/
+
 function renderError(jqxhr) {
+    // Taken straight from the course material
     let msg = jqxhr.responseJSON["@error"]["@message"];
     $("div.notification").html("<p class='error'>" + msg + "</p>");
 }
 
-function renderMsg(msg) {
-    $("div.notification").html("<p class='msg'>" + msg + "</p>");
-}
-
 function getResource(href, renderer) {
+    // Taken straight from the course material
     $.ajax({
         url: href,
         success: renderer,
@@ -26,6 +33,7 @@ function getResource(href, renderer) {
 }
 
 function sendData(href, method, item, postProcessor) {
+    // Taken straight from the course material
     $.ajax({
         url: href,
         type: method,
@@ -38,6 +46,7 @@ function sendData(href, method, item, postProcessor) {
 }
 
 function followLink(event, a, renderer) {
+    // Taken straight from the course material
     event.preventDefault();
     getResource($(a).attr("href"), renderer);
 }
@@ -124,7 +133,7 @@ function renewLoan(item) {
                 m.setDate(m.getDate() + data.loantime);
                 item.duedate = m.getUTCFullYear() + "-" + (m.getUTCMonth() + 1) + "-" + m.getUTCDate();
                 item.status = "Renewed";
-                sendData(item["@controls"].edit.href, item["@controls"].edit.method, item, refreshPatron(item));
+                sendData(item["@controls"].edit.href, item["@controls"].edit.method, item, refreshPatronView(item));
             }
         },
         error: renderError
@@ -132,10 +141,11 @@ function renewLoan(item) {
 }
 
 function returnLoan(item) {
-    sendData(item["@controls"]["inlibris:delete"].href, item["@controls"]["inlibris:delete"].method, item, refreshPatron(item));
+    sendData(item["@controls"]["inlibris:delete"].href, item["@controls"]["inlibris:delete"].method, item, refreshPatronView(item));
 }
 
 function appendLoanRow(body) {
+    // Appends a row to secondtable when patron has loans. Is called from renderLoansBy
     let link = "<a href='" +
             body["@controls"]["inlibris:target-book"].href +
             "' onClick='followLink(event, this, renderBook)'>" + body.book_barcode + "</a>";
@@ -188,7 +198,7 @@ function renderLoansBy(body) {
         });
     } else {
         $(".secondresulttable thead").html(
-            "No loans"
+            "<p>No loans</p>"
         );
         $(".secondresulttable tbody").empty();
     }
@@ -251,6 +261,7 @@ function bookRow(item) {
 }
 
 function renderLoanOf(item) {
+    // Renders the loan information to book view when the book is loaned. Is called from renderBook.
     $(".secondtabletitle").html(
         "<h3>Loan status</h3>"
     );
@@ -330,7 +341,11 @@ function renderLoanPatronLink(item) {
 
 function filterPatronsFunction() {
     /*
-    Modified from https://www.w3schools.com/howto/howto_js_filter_lists.asp
+    Filters the patron list held at global variable all_patrons with the contents of the
+    input field created at renderLoanOfError. Is called every time the user writes a letter
+    in the input field. Renders the results in the second table with a link to create the loan.
+
+    Filtering is modified from https://www.w3schools.com/howto/howto_js_filter_lists.asp
     */
     var input = document.getElementById("patronSearch");
     var filter = input.value.toUpperCase();
@@ -361,6 +376,13 @@ function filterPatronsFunction() {
 }
 
 function renderLoanOfError(xhr, ajaxOptions, thrownError) {
+    /*
+    Renders an input field to search patrons using patron barcode to create a loan for a book.
+    Is called from renderBook when the book is not loaned.
+    Is called renderLoanOfError because renderBook works by trying to GET the LoanItem and if
+    it receives an error code 400, this function renders the input form.
+    */
+
     if (xhr.status === 400) {
         $(".secondtabletitle").html(
             "<h3>Loan status</h3>"
@@ -476,9 +498,5 @@ function renderBooks(body) {
 }
 
 $(document).ready(function () {
-    $("div.header").html(
-        "<h1>Librarian Master UI</h1>"
-    )
-
-    getResource("http://localhost:5000/inlibris/api/", renderEntrypoint);
+    getResource(ENTRYPOINT, renderEntrypoint);
 });

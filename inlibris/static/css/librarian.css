@@ -1,17 +1,14 @@
-form label {
-    font-weight: bold;
-    display:block;/*Necessary for the first letter*/
-}
-form label:first-letter{
-    text-transform: uppercase;
-}
-
-.navigation {
+.navigation, .header {
     text-align: center;
 }
 
-.header {
-    text-align: center;
+h1, h3, th, td, tr, p {
+    color: #4c4c4c;
+}
+
+h1 {
+    font-size: 50px;
+    font-weight: lighter;
 }
 
 body {
@@ -19,9 +16,10 @@ body {
     margin: auto;
     margin-top: 30px;
     width: 700px;
-    background-color: gray;
+    background-color: lightgray;
     border: 30px solid white;
     border-radius: 10px;
+    box-shadow: 0 0 0 1px black;
 }
 
 div {
