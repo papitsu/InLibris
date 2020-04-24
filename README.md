@@ -46,6 +46,8 @@ Finished 24.4.2020.
 
 Once the database and API are running, the client can be accessed by opening "localhost:5000/inlibris/librarian/" in your browser.
 
+Client uses six resources from the API. It uses methods GET, PUT, POST and DELETE. It doesn't use any additional APIs. No testing is implemented for the client. The client is a true hypermedia client: only the entrypoint URL is specified and all the other requests are formed using the hypermedia links.
+
 <br/><br/>
 *Remember to include all required documentation and HOWTOs, including how to create and populate the database, how to run and test the API, the url to the entrypoint and instructions on how to setup and run the client*
 
