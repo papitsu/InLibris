@@ -32,7 +32,7 @@ Finished 3.4.2020.
 * Testing is provided for both the database and the API
 * Flask-SQLAlchemy raises a lot of deprecation warnings in Python 3.7. To silence them, you can use argument "-W ignore::DeprecationWarning" with all following pytest commands
 * To run all tests, run command "pytest"
-* To run all tests with coverage analysis, run command "pytest --conv=inlibris"
+* To run all tests with coverage analysis, run command "pytest --cov=inlibris"
 * To run the database tests, run command "pytest tests/db_test.py"
 * To run the APItests, run command "pytest tests/api_test.py"
 
